@@ -5,10 +5,13 @@ import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
 import java.security.spec.RSAPublicKeySpec;
 import java.security.PublicKey;
+import java.security.KeyFactory;
+import java.security.spec.InvalidKeySpecException;
+import java.security.NoSuchAlgorithmException;
 
 public class X509CertificateDemo {
 
-    public static void main(String args[]) throws FileNotFoundException, CertificateException {
+    public static void main(String args[]) throws FileNotFoundException, CertificateException, NoSuchAlgorithmException, InvalidKeySpecException {
 
         // Assume que ficheiro cert.cer está na diretoria de execução.
         FileInputStream in = new FileInputStream("cert.cer");
@@ -22,8 +25,9 @@ public class X509CertificateDemo {
         // Obtém a chave pública do certificado.
         PublicKey pk = certificate.getPublicKey();
 
-        // Converte, via casting, o objeto pk para RSAPublicKey.
-        RSAPublicKeySpec pkRSA = (RSAPublicKeySpec) pk;
+        // Converte o objeto pk para RSAPublicKey.
+        KeyFactory factory = KeyFactory.getInstance("RSA");
+        RSAPublicKeySpec pkRSA = factory.getKeySpec(pk, RSAPublicKeySpec.class);
 
         // Mostra informações da chave pública:
         System.out.println("Algoritmo da chave pública: " + pk.getAlgorithm());
