@@ -1,7 +1,9 @@
-# cipher
-openssl enc -des-cbc -e -in mensagem.txt -out mensagem.cif -iv 7766554433221100 -K 0011223344556677
+# cipher/decipher with des in ecb mode
+openssl enc -des-ecb -e -in msg.txt -out msg.cif -K 18047f5e9778ee41
+openssl enc -des-ecb -d -in msg.cif -out msg_original.txt -K 18047f5e9778ee41
 
-# decipher
+# cipher/decipher with des in cbc mode
+openssl enc -des-cbc -e -in mensagem.txt -out mensagem.cif -iv 7766554433221100 -K 0011223344556677
 openssl enc -des-cbc -d -in mensagem.cif -out mensagem_original.txt -iv 7766554433221100 -K 0011223344556677
 
 # decipher and show padding
