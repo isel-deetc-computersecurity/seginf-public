@@ -25,7 +25,7 @@ Em resumo: **é possível utilizar uma mesma primitiva criptográfica (*e.g.*, A
 Esquemas criptográficos geralmente são identificados por um sistema de nomeação que identifica a primitiva criptográfica e outros métodos auxiliares. Um exemplo é o `DES-CBC-PKCS5Padding`: utiliza-se o DES como primitiva criptográfica através de um **modo de operação** CBC e um mecanismo de ***padding*** chamado PKCS5Padding (por ora, não é importante percebermos exatamente o que é um modo de operação ou *padding*; estes conceitos serão estudados posteriormente). Outro exemplo, a título de ilustração, seria o `RSA-OAEP-MGF1-SHA1​`.
 
 > [!NOTE]
-> **Objetivo:** ilustrar um exemplo mais concreto de esquema criptográfico e do seu uso.
+> Ilustração de um exemplo mais concreto de esquema criptográfico e do seu uso.
 > - Aceder a uma página qualquer (*e.g.*, https://www.google.com/) que utilize HTTPS e mostrar a especificação do esquema criptográfico usado no certificado digital.
 >   - No Google Chrome: `Cadeado > Connection is Secure > Certificate is valid > Details > Certificate Signature Algorithm`.
 
