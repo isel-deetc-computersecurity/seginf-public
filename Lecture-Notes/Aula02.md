@@ -24,14 +24,10 @@ Em resumo: **é possível utilizar uma mesma primitiva criptográfica (*e.g.*, A
 
 Esquemas criptográficos geralmente são identificados por um sistema de nomeação que identifica a primitiva criptográfica e outros métodos auxiliares. Um exemplo é o `DES-CBC-PKCS5Padding`: utiliza-se o DES como primitiva criptográfica através de um **modo de operação** CBC e um mecanismo de ***padding*** chamado PKCS5Padding (por ora, não é importante percebermos exatamente o que é um modo de operação ou *padding*; estes conceitos serão estudados posteriormente). Outro exemplo, a título de ilustração, seria o `RSA-OAEP-MGF1-SHA1​`.
 
-!!! abstract Demonstração
-    **Objetivo:** ilustrar um exemplo mais concreto de esquema criptográfico e do seu uso.
-
-    **Preparação:**
-
-    - Aceder a uma página qualquer (*e.g.*, https://www.google.com/) que utilize HTTP e mostrar a especificação do esquema criptográfico usado no certificado digital.
-        - No Google Chrome: `Cadeado > Connection is Secure > Certificate is valid > Details > Certificate Signature Algorithm`.
-    - Não vale a pena explicar muita coisa sobre certificados neste ponto.
+> [!NOTE]
+> **Objetivo:** ilustrar um exemplo mais concreto de esquema criptográfico e do seu uso.
+> - Aceder a uma página qualquer (*e.g.*, https://www.google.com/) que utilize HTTPS e mostrar a especificação do esquema criptográfico usado no certificado digital.
+>   - No Google Chrome: `Cadeado > Connection is Secure > Certificate is valid > Details > Certificate Signature Algorithm`.
 
 
 Há ainda o que convencionou-se chamar de **protocolos criptográficos**. Protocolos criptográficos utilizam um ou mais esquemas criptográficos e, sobre estes, definem sequências de ações a serem realizadas pelas entidades envolvidas na aplicação, de forma a garantir as propriedades de segurança desejadas. Por exemplo, mais à frente nesta UC, estudaremos um protocolo criptográfico de comunicação chamado TLS (*Transport Layer Security*). No início de uma comunicação TLS, utiliza-se um esquema criptográfico baseado em um tipo particular de primitiva criptográfica chamada de **criptografia de chave assimétrica**. Passada esta fase inicial, o TLS passa a empregar esquemas criptográficos baseados em outra classe de primitivas denominada de **criptografia de chave simétrica**. Embora o TLS possa trabalhar com diferentes combinações de esquemas criptográficos, um exemplo é o `    TLS_RSA_WITH_DES_CBC_SHA​`, que utiliza a primitiva criptográfica de chave assimétrica RSA seguida do DES como primitiva de chave simétrica.
@@ -140,13 +136,6 @@ Um exemplo mais simples (porém bem menos seguro) de cifra de bloco segue o segu
 - Função de geração de chaves $G = k$: gera chaves que corresponde a números inteiros positivos de 64 bits.
 - Função de cifra $E(k)(m) = m \oplus k = c$. Aqui, assume-se que a mensagem é representada como um número de 64 bits e o operador $\oplus$ denota a operação XOR bit-a-bit.
 - Função de decifra $D(k)(c) = c \oplus k = m'$. Igualmente, aqui, assume-se que o criptograma é representado como um número de 64 bits.
-
-!!! abstract Comentário
-
-    **Destacar:**
-
-    - que esta primitiva simplificada é justamente a que foi implementada no programa de exemplo usado nas demonstrações anteriores; e
-    - que a necessidade de processar $m$ e $c$ como um números de 64 bits resulta na restrição do tamanho do bloco.
 
 Enquanto a cifra acima descrita utiliza apenas a operação de XOR bit-a-bit, cifras simétricas de aplicação prática como o DES e o AES utilizam operações mais sofisticadas. O DES, por exemplo, utiliza, entre outras, as seguintes operações:
 
