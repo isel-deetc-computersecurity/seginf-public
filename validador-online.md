@@ -9,8 +9,8 @@ Passo a passo para usar o validador com chaves dos certificados fornecidos para 
 - Campo Decode-Header:
     - mudar valor do campo para: `{ "alg": "RSA-OAEP", "enc": "A256GCM"}`
 - Campo Decode payload:
-    - Em caso de processo de cifrar, o valor do campo precisa ser texto, entre aspas.
-    - Em caso de processo de decifrar, o valor do campo será alterado quando o botão `✔` é carregado.
+    - Em caso de processo de cifrar, o valor deste campo precisa ser texto, entre aspas.
+    - Em caso de processo de decifrar, o valor deste campo será alterado quando o botão `✔` é carregado.
 - Campo Private key: (usar os certificados fornecidos no trabalho)
     - Converter pfx para formato pem sem password com OpenSSL (exemplo com Bob_2):
         - `openssl pkcs12 -in certificates-keys/pfx/Bob_2.pfx -noenc -nocerts -out Bob_2_key.pem`
