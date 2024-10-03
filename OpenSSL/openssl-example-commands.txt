@@ -1,0 +1,21 @@
+# cipher/decipher with des in ecb mode
+openssl enc -des-ecb -e -in msg.txt -out msg.cif -K 18047f5e9778ee41
+openssl enc -des-ecb -d -in msg.cif -out msg_original.txt -K 18047f5e9778ee41
+
+# cipher/decipher with des in cbc mode
+openssl enc -des-cbc -e -in mensagem.txt -out mensagem.cif -iv 7766554433221100 -K 0011223344556677
+openssl enc -des-cbc -d -in mensagem.cif -out mensagem_original.txt -iv 7766554433221100 -K 0011223344556677
+
+# decipher and show padding
+openssl enc -des-cbc -d -nopad -in mensagem.cif -out mensagem_original.txt -iv 7766554433221100 -K 0011223344556677
+
+# cipher/decipher with aes in stream mode (counter)
+openssl enc -aes-128-ctr -e -in msg.txt -out msg-aes-ctr.cif -iv 0ed425637bb85abc9790850627b2355d -K 42c2771f807215802dff1329fa7bf2cf
+openssl enc -aes-128-ctr -d -in msg-aes-ctr.cif -out msg_original.txt -iv 0ed425637bb85abc9790850627b2355d -K 42c2771f807215802dff1329fa7bf2cf
+
+# hmac com sha256 using key "myscretkey"
+openssl dgst -hmac mysecretkey mensagem.txt
+
+# sha256
+openssl dgst -sha256 messagem.txt
+
