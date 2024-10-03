@@ -26,7 +26,7 @@ public class SymmetricCipherIVDemo {
 		Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
 
 		// Associa a chave key a cifra
-		cipher.init(cipher.ENCRYPT_MODE, key);
+		cipher.init(Cipher.ENCRYPT_MODE, key);
 
 		// Obtém o IV gerado aleatoriamente durante o init()
 		byte[] iv = cipher.getIV();
@@ -36,7 +36,7 @@ public class SymmetricCipherIVDemo {
 		 * restantes operações de cifra */
 
 		// Decifra com mesma chave e iv usado na cifra
-		cipher.init(cipher.DECRYPT_MODE, key, new IvParameterSpec(iv));
+		cipher.init(Cipher.DECRYPT_MODE, key, new IvParameterSpec(iv));
 
 		/* ...
 		 *

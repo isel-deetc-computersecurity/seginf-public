@@ -27,7 +27,7 @@ public class SymmetricCipherSecRandomDemo {
 		Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");      
 
 		// Associa a chave key a cifra
-		cipher.init(cipher.ENCRYPT_MODE, key);      
+		cipher.init(Cipher.ENCRYPT_MODE, key);      
 
 		// Mensagem a ser cifrada
 		String msg = new String("Mensagem secreta!");
@@ -45,7 +45,7 @@ public class SymmetricCipherSecRandomDemo {
 		 * Apenas para experiencia: */
 
 		// Decifra com mesma chave
-		cipher.init(cipher.DECRYPT_MODE, key);
+		cipher.init(Cipher.DECRYPT_MODE, key);
 		byte[] bytes2 = cipher.doFinal(bytes);
 
 		// Mostra a mensagem original
