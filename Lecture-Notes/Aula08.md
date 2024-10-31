@@ -46,19 +46,19 @@ Deve-se nota, ainda, a necessidade de, na última linha, finalizar a operação 
 
 ## Parâmetros
 
-É comum que haja parâmetros adicionais de funcionamento dos algoritmos acessados pelas *Engine Classes*. Dois exemplos são os IVs utilizados pelos modos de operação em bloco baseados em fluxo para o `Cipher` e o número de bits das chaves a serem gerados para o `KeyGenerator`. Em geral, a especificação destes parâmetros é opcional e, caso não sejam fornecidos, a JCA utiliza valores por omissão (no caso, por exemplo, do tamanho das chaves) ou valores escolhidos aleatoriamente (no caso, por exemplo, dos IVs).
+É comum que haja parâmetros adicionais de funcionamento dos algoritmos acessados pelas *Engine Classes*. Dois exemplos são os IVs utilizados pelos modos de operação em fluxo para o `Cipher` e o número de bits das chaves a serem gerados para o `KeyGenerator`. Em geral, a especificação destes parâmetros é opcional e, caso não sejam fornecidos, a JCA utiliza valores por omissão (no caso, por exemplo, do tamanho das chaves) ou valores escolhidos aleatoriamente (no caso, por exemplo, dos IVs).
 
 Embora opcionais, muitas vezes desejamos - ou precisamos - especificar o valor destes parâmetros. Por exemplo, podemos querer utilizar uma primitiva AES ou RSA com um tamanho de chave específico, diferente do valor utilizado por omissão. Durante um processo de decifra, somos obrigados a utilizar o mesmo IV usado durante a cifra, pelo que não seria aceitável deixar que a JCA escolhesse um IV aleatoriamente. Seja qual for o caso, a JCA fornece classes específicas para manipularmos os parâmetros dos algoritmos criptográficos. 
 
 A classe principal para este fim é a `AlgorithmParameters`. Esta fornece uma representação **opaca** dos parâmetros de um determinado algoritmo criptográfico. Dito de outra forma, a `AlgorithmParameters` armazena / representa os parâmetros de um algoritmo, mas não possibilita ao programador a inspeção / interação com valores específicos destes parâmetros.
 
-Quando precisamos de acesso os valores individuais de cada parâmetro de um algoritmo, devemos utilizar as classes que implementam a interface `AlgorithmParameterSpec`. Estas classes são **transparentes** e permitem acesso aos valores dos parâmetros através de métodos `get`. Há classes específicas para cada algoritmo ou tipo de algoritmo. Por exemplo, há a `IvParameterSpec` que representa um IV conforme utilizado por esquemas de cifra baseados em fluxo. Outro exemplo é o `RSAKeyGenParameterSpec` que dá acesso a parâmetros da geração de chaves RSA (*e.g.*, tamanho da chave, módulo, expoente público).
+Quando precisamos de acesso os valores individuais de cada parâmetro de um algoritmo, devemos utilizar as classes que implementam a interface `AlgorithmParameterSpec`. Estas classes são **transparentes** e permitem acesso aos valores dos parâmetros através de métodos `get`. Há classes específicas para cada algoritmo ou tipo de algoritmo. Por exemplo, há a `IvParameterSpec` que representa um IV conforme utilizado por esquemas de cifra baseados em fluxo. Outro exemplo é o `RSAKeyGenParameterSpec` que dá acesso a parâmetros da geração de chaves RSA (*e.g.*, tamanho da chave, expoente público).
 
 A classe `AlgorithmParameters` possui métodos específicos que permitem  fazer conversões entre as representações opaca (ela própria) e as representações transparentes (`AlgorithmParameterSpec`). Em particular, o método `init()` recebe como parâmetro um objeto do tipo `AlgorithmParameterSpec` e inicializa os valores dos parâmetros para aqueles armazenados na versão transparente. Por outro lado, o método `getParameterSpec()` retorna um objeto do tipo `AlgorithmParameterSpec` com a representação transparente dos parâmetros armazenados na `AlgorithmParameters`.
 
 Há, ainda, a classe `AlgorithmParameterGenerator` que permite gerar objetos do tipo `AlgorithmParameters` para uso por alguns dos algoritmos disponíveis na JCA.
 
-Para perceber melhor a utilidade e forma de uso das classes relativas aos parâmetros, considere a seguinte situação. Gostaríamos de criar uma instância da *engine class* `Cipher` para realizar a cifra de uma mensagem com um esquema `AES/CBC/PKCS5Padding`, mas queremos utilizar uma chave e um IV com valores específicos. Desta forma, não podemos utilizar a classe `KeyGenerator` (que gera uma chave aleatória), nem deixar que a instância da classe `Cipher` escolha aleatoriamente o IV. Ao contrário, o comportamento desejado pode ser obtido com o seguinte troço de código:
+Para perceber melhor a utilidade e forma de uso das classes relativas aos parâmetros, considere a seguinte situação. Gostaríamos de criar uma instância da *engine class* `Cipher` para realizar a cifra de uma mensagem com um esquema `AES/CBC/PKCS5Padding`, mas queremos utilizar uma chave e um IV com valores específicos. Desta forma, não podemos utilizar a classe `KeyGenerator` (que gera uma chave aleatória), nem deixar que a instância da classe `Cipher` escolha aleatoriamente o IV. Ao contrário, o comportamento desejado pode ser obtido com o seguinte trecho de código:
 
 ```Java
 // Gera os bytes para o vetor de bytes correspondente a chave
@@ -80,15 +80,15 @@ cipher.init(Cipher.ENCRYPT_MODE, key, iv);
 // Continuar com a cifra de uma mensagem...
 ```
 
-O troço começa por definir dois *arrays* de bytes, `keyBytes` e `ivBytes`, com o conteúdo exato que queremos para a chave e o IV. Note que, em um sistema real, estes valores poderiam ser obtidos através de ficheiros ou através de dados recebidos por alguma rede de comunicação. 
+O trecho começa por definir dois *arrays* de bytes, `keyBytes` e `ivBytes`, com o conteúdo exato que queremos para a chave e o IV. Note que, em um sistema real, estes valores poderiam ser obtidos através de ficheiros ou através de dados recebidos por alguma rede de comunicação. 
 
 A seguir, utiliza-se a classe `SecretKeySpec` para a geração do objeto `SecretKey`. Conforme indica o nome, a classe `SecretKeySpec` é uma subclasse da `AlgorithmParameterSpec`, especificamente para a manipulação transparente de chaves. O construtor desta classe recebe como parâmetros o conteúdo da chave que desejamos definir e o nome do algoritmo no qual a chave será utilizada (neste caso, `AES`). Note que a classe `SecretKeySpec` implementa a interface `SecretKey`, de forma que podemos atribuir a instância recém-gerada a uma variável deste tipo.
 
 Na linha seguinte, fazemos uma operação análoga com o IV: instanciamos a classe `IvParameterSpec`, passando o conteúdo desejado para o IV como parâmetro do construtor. A instância resultante é armazenada na variável `iv`.
 
-Após criar uma instância da *Engine Class* `Cipher`, como já feito em exemplos anteriores, o troço conclui com a chamada ao método `init()`. Aqui, são passados como parâmetros a chave criada a partir da classe `SecretKeySpec` e o IV criado a partir da `IvParameterSpec`. 
+Após criar uma instância da *Engine Class* `Cipher`, como já feito em exemplos anteriores, o trecho conclui com a chamada ao método `init()`. Aqui, são passados como parâmetros a chave criada a partir da classe `SecretKeySpec` e o IV criado a partir da `IvParameterSpec`. 
 
-Na sequência deste troço, o objeto `cipher` poderia ser utilizado exatamente das mesmas formas que já vimos em exemplos anteriores.
+Na sequência deste trecho, o objeto `cipher` poderia ser utilizado exatamente das mesmas formas que já vimos em exemplos anteriores.
 
 ## Chaves
 
@@ -99,7 +99,7 @@ Embora já tenhamos manipulado chaves em vários exemplos apresentados até aqui
 - Classe `KeyPair`: representa um par de chaves pública e privada. Internamente, esta classe contém tanto uma `PublicKey`, quanto uma `PrivateKey`.
 - Classes `KeyGenerator` e `KeyPairGenerator`: são *engine classes* que disponibilizam funcionalidades para geração, respetivamente, de chaves simétricas e assimétricas. Em particular, a `KeyGenerator` possui o método `generateKey()`, enquanto a `KeyPairGenerator` possui o método `generateKeyPair()`.
 
-Por exemplo, considere o troço de código a seguir:
+Por exemplo, considere o trecho de código a seguir:
 
 ```Java
 // Cria objeto KeyPair
@@ -114,7 +114,7 @@ PrivateKey privKey = pair.getPrivate();
 PublicKey publicKey = pair.getPublic();
 ```
 
-Este troço de código faz uma manipulação de um par de chaves pública e privada. O troço começa por instanciar a classe `KeyPairGenerator`, particularmente para a geração de um par de chaves RSA. Na linha a seguir, o objeto `keyPairGen` é inicializado, passando-se como parâmetro o tamanho da chave RSA desejada. 
+Este trecho faz uma manipulação de um par de chaves pública e privada. O trecho começa por instanciar a classe `KeyPairGenerator`, particularmente para a geração de um par de chaves RSA. Na linha a seguir, o objeto `keyPairGen` é inicializado, passando-se como parâmetro o tamanho da chave RSA desejada. 
 
 Feito isto, o objeto `keyPairGen` é utilizado para efetivamente gerar o par de chaves utilizando-se o método `generateKeyPair()`. O retorno deste método é um objeto do tipo `KeyPair`. Conforme explicado anteriormente, este método armazena internamente um `PrivateKey` e um `PublicKey`. É possível obter estas duas chaves em separado através das funções `getPrivate()` e `getPublic()`, respetivamente.
 
@@ -122,7 +122,7 @@ Deve-se notar que todas as classes citadas aqui fornecem representações opacas
 
 Outras classes relacionadas a chaves que são por vezes importante são a `KeyFactory` e a `SecretKeyFactory`. Trata-se de *engine classes* que podem ser utilizadas para converter representações opacas de chaves em representações transparentes. Por exemplo, a `KeyFactory` disponibiliza os métodos `generatePrivate()` e `generatePublic()` que retornam, respetivamente, objetos dos tipos `PrivateKey` e `PublicKey` a partir de um objeto do tipo `KeySpec`. Esta mesma classe disponibiliza o método `getKeySpec()` que faz a conversão inversa: recebe como argumento um objeto `Key` e retorna um `KeySpec`. Na `SecretKeyFactory` há os métodos `generateSecret()` e `getKeySpec()` para propósitos análogos.
 
-Para que este conceito de conversão entre representações opacas e transparentes fique mais claro, considere o troço de código a seguir:
+Para que este conceito de conversão entre representações opacas e transparentes fique mais claro, considere o trecho de código a seguir:
 
 ```Java
 // KeyFactory para obter detalhes das chaves
@@ -139,9 +139,9 @@ System.out.println("Public Exponent: " +
 publicKeySpec.getPublicExponent());
 ```
 
-O objetivo do troço é imprimir detalhes das chaves `privKey` e `publicKey`, geradas aleatoriamente pela própria JCA no exemplo anterior. Como estas variáveis são instâncias das classes `PrivateKey` e `PrivateKey` - e, portanto, opacas -, não podemos aceder diretamente aos detalhes que gostaríamos de imprimir. Por isto, precisamos de um processo de conversão para as versões transparentes `privKeySpec` e `publicKeySpec`.
+O objetivo do trecho é imprimir detalhes das chaves `privKey` e `publicKey`, geras aleatoriamente pela própria JCA no exemplo anterior. Como estas variáveis são uma instâncias das classes `PrivateKey` e `PrivateKey` - e, portanto, opacas -, não podemos aceder diretamente aos detalhes que gostaríamos de imprimir. Por isto, precisamos de um processo de conversão para as versões transparentes `privKeySpec` e `publicKeySpec`.
 
-Isto é feito através da *engine class* `KeyFactory`. Para tanto, obtém-se uma instância desta classe executando-se o método `getInstance()`. Neste ponto, é necessário especificar qual é o algoritmo relativo à chave que se deseja manipular. A forma utilizada neste troço para isto é simplesmente utilizar o método `getAlgorithm()` do objeto `keyPairGen` utilizado anteriormente para a geração das chaves.
+Isto é feito através da *engine class* `KeyFactory`. Para tanto, obtém-se uma instância desta classe executando-se o método `getInstance()`. Neste ponto, é necessário especificar qual é o algoritmo relativo à chave que se deseja manipular. A forma utilizada neste trecho para isto é simplesmente utilizar o método `getAlgorithm()` do objeto `keyPairGen` utilizado anteriormente para a geração das chaves.
 
 De posse da instância da classe `KeyFactory`, podemos utilizar o método `getKeySpec` para obter objetos dos tipos `RSAPrivateKeySpec` e `RSAPublicKeySpec` para as chaves pública e privada, respetivamente.
 
@@ -155,7 +155,7 @@ Como o nome sugere, a *engine class* `Mac` tem por propósito o cálculo de marc
 2. Realizar a inicialização do objeto através do método `init()` para especificar a chave secreta e, eventualmente, outros parâmetros desejados.
 3. Utilizar alguma combinação dos métodos `update()` e `doFinal()` para realizar a geração da marca.
 
-Há, no entanto, algumas diferenças importantes entre a `Mac` e a `Cipher`. Uma destas diferenças é que o método `init()` da `Mac` não tem nenhum parâmetro de modo de operação, já que, ao contrário da `Cipher`, sempre objetivamos o cálculo da tag MAC. Outra diferença é que o método `update()` não retorna nada na classe `Mac`. Isso porque o valor da marca só fica disponível ao final do processamento de toda a mensagem e, portanto, só é retornado pelo método `doFinal()`.
+Há, no entanto, algumas diferenças importantes entre a `Mac` e a `Cipher`. Uma destas diferenças é que o método `init()` da `Mac` não tem nenhum parâmetro de modo de operação, já que, ao contrário da `Cipher`, sempre objetivamos o cálculo da tag MAC. Outra diferença é que o método `update()` não retornada nada na classe `Mac`. Isso porque o valor da marca só fica disponível ao final do processamento de toda a mensagem e, portanto, só é retornado pelo método `doFinal()`.
 
 Além destas diferenças, a classe `Mac` tem também alguns métodos particulares que não aparecem na `Cipher`. Um exemplo é o `getMacLength()` que retorna o tamanho, em bytes, da marca gerada.
 
@@ -186,7 +186,7 @@ Uma vez instanciado e inicializado o objeto, o uso da classe `Signature` é base
 
 Para a verificação de uma assinatura, o processo é análogo. Começamos por passar os bytes da mensagem a ser verificada com uma ou mais chamadas ao método `update()`. Quando a mensagem foi completamente passada ao objeto, fazemos uma única chamada ao método `verify()` que retorna `true`, caso a assinatura seja consistente com a mensagem, ou `false`, caso contrário.
 
-Podemos ver um exemplo de uso da classe `Signature` no troço de código abaixo:
+Podemos ver um exemplo de uso da classe `Signature` no trecho de código abaixo:
 
 ```Java
 String m = "Mensagem texto a ser assinada";
@@ -214,7 +214,7 @@ sign.update(m.getBytes());
 byte[] s = sign.sign();
 ```
 
-Este troço de código gera uma assinatura digital baseada em um algoritmo `RSA` com *hash* `SHA-256`. O troço começa pela geração de um par de chaves, utilizando a classe `KeyPairGenerator`. Para este exemplo, utilizaremos uma chave de 4096 bits. Uma vez gerado o par de chaves, separamos as porções pública e privada. Isto é importante porque o processo de assinatura utiliza apenas a chave privada.
+Este trecho gera uma assinatura digital baseada em um algoritmo `RSA` com *hash* `SHA-256`. O trecho começa pela geração de um par de chaves, utilizando a classe `KeyPairGenerator`. Para este exemplo, utilizaremos uma chave de 4096 bits, embora o tamanho da chave não influencie no restante do código. Uma vez gerado o par de chaves, separamos as porções pública e privada. Isto é importante porque o processo de assinatura utiliza apenas a chave privada.
 
 A parte específica do código relativa à classe `Signature` começa pela instanciação desta com o auxílio do método `getInstance()`. Nesta chamada do método, especificamos exatamente o esquema de assinatura desejado: `"SHA256withRSA"`. A seguir, manifestamos a intenção de utilizar o objeto para a geração de uma assinatura. Fazemos isto pela chamada ao método `initSign()`. Este método recebe como parâmetro a porção privada da chave gerada anteriormente.
 
@@ -234,7 +234,7 @@ if (sign.verify(s)) System.out.println("Signature matches!");
 else System.out.println("Signature does not match!");
 ```
 
-Aqui, assumimos que o objeto `sign` da *engine class* `Signature` já encontra-se instanciado. Dentre as diferenças notáveis deste troço de código em relação ao anterior estão:
+Aqui, assumimos que o objeto `sign` da *engine class* `Signature` já encontra-se instanciado. Dentre as diferenças notáveis deste trecho em relação ao anterior estão:
 
 - O uso do `initVerify()`, ao invés do `initSign()`, na inicialização do objeto.
 - O uso da chave pública ao invés da privada.
