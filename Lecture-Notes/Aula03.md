@@ -1,5 +1,3 @@
-[Changelog]: # (v0: versão inicial por Diego Passos)
-
 # Aula 03 - Modos de Operação
 
 Na última aula, discutimos, entre outros tópicos, as cifras simétricas. Em particular, focamos nas cifras de bloco, cujas primitivas operam sobre blocos de tamanho fixo. Como discutido naquela altura, isto impõe uma restrição pouco prática, já que desejamos esquemas criptográficos que possam operar sobre mensagens de tamanho arbitrário. 
@@ -62,7 +60,7 @@ Desta forma, mesmo que um bloco se repita ao longo de uma mensagem, cada uma de 
 
 Note que na equação, a mesma lógica de combinar o texto plano do bloco atual com o texto cifrado do bloco anterior é repetida para todos os blocos, **incluindo** o primeiro. Porém, o primeiro bloco não tem um antecessor e, portanto, surge a questão: como definir $c_0$ (*i.e.*, o texto cifrado do bloco anterior que não existe).
 
-O CBC lida com isso com a introdução de um parâmetro chamado **vetor de iniciação** (ou IV, do Inglês *Initialization Vector*). O IV é um valor geralmente escolhido aleatoriamente e, neste método, tem o mesmo número de bits de um bloco. No CBC, o IV é usado justamente como o valor do $c_0$ que é combinado com o $m_1$ na cifra do primeiro bloco.
+O CBC lida com isso com a introdução de um parâmetro chamado **vetor de inicialização** (ou IV, do Inglês *Initialization Vector*). O IV é um valor geralmente escolhido aleatoriamente e, neste método, tem o mesmo número de bits de um bloco. No CBC, o IV é usado justamente como o valor do $c_0$ que é combinado com o $m_1$ na cifra do primeiro bloco.
 
 Mas por que razão utilizar o IV? Dito de outra forma: por que não abrimos uma exceção para o primeiro bloco e ciframos apenas $m_1$ diretamente? Isso é feito para que, para uma mesma chave $k$, duas mensagens que tenham um mesmo primeiro bloco de texto plano sejam potencialmente mapeadas para textos cifrados com valores diferentes. Isso ocorrerá, desde que sejam utilizados IVs diferentes para cada mensagem. Esta decisão dificulta ainda mais a identificação de padrões das mensagens originais no texto cifrado.
 
@@ -146,6 +144,49 @@ Apesar de parecer uma tarefa relativamente trivial, a forma de inclusão do *pad
 No ataque, S. Vaudenay assume que o atacante, de alguma maneira, consegue observar se o receptor considerou o *padding* correto ou não. Por exemplo, a depender do sistema, o recebimento de uma mensagem com *padding* errado pode fazer com que o receptor responda com uma mensagem de erro específica. O que S. Vaudenay mostrou é que, nestas condições, o atacante pode combinar um bloco de texto cifrado que ele deseja compreender com um outro bloco especialmente construído e enviar a mensagem ao receptor. Com base no *feedback* do receptor quando a se a mensagem resultante decodificada tinha um *padding* válido, é possível recuperar gradativamente partes do texto plano correspondente ao bloco de texto cifrado.
 
 Além de ilustrar o potencial impacto negativo na segurança que esquemas de *padding* têm, o ataque proposto por S. Vaudenay também ilustra outros conceitos interessantes de segurança da informação. Um destes é a ideia de **ataque de texto cifrado escolhido**: ou seja, o ato de um atacante construir mensagens cifradas através de um processo especial e enviá-las para uma das entidades legítimas e conseguir, com isso, facilidades na criptoanálise da cifra. O ataque proposto utiliza ainda o conceito de ***side channel attack***: a ideia de observar determinadas propriedades públicas do sistema atacado com o objetivo de inferir informações confidenciais.
+
+> [!NOTE]
+>
+>    Ilustração da ferramenta `OpenSSL` e de alguns exemplos de primitivas e modos de operação.
+>
+>    - Mostrar exemplo de cifra de ficheiro com DES-CBC:
+>
+>    ```
+>    # openssl enc -des-cbc -e -in mensagem.txt -out mensagem.cif -iv 7766554433221100 -K 0011223344556677
+>    ```
+>
+>    - Mostrar que comando falha a depender da versão do OpenSSL porque o DES é considerado obsoleto. Mostrar como contornar isso:
+>
+>    ```
+>    # openssl enc -des-cbc -e -in mensagem.txt -out mensagem.cif -iv 7766554433221100 -K 0011223344556677 -provider legacy
+>    ```
+>
+>    - Mostrar conteúdos das mensagens original e cifrada:
+>
+>    ```
+>    # hexdump -C mensagem.cif
+>    ```
+>
+>    - Mostrar a decifra da mensagem:
+>
+>    ```
+>    # openssl enc -des-cbc -d -in mensagem.cif -out mensagem_original.txt -iv 7766554433221100 -K 0011223344556677 -provider legacy
+>    # cat mensagem_original.txt
+>    ```
+>
+>    - Ilustrar *padding* adicionado à mensagem:
+>    
+>    ```
+>    # du -b mensagem.*
+>    68528	mensagem.cif
+>    68524	mensagem.txt
+>
+>    ```
+>
+>    - Mostrar decifra sem remover o *padding*:
+>    ```
+>    # openssl enc -des-cbc -d -nopad -in mensagem.cif -out mensagem_original.txt -iv 7766554433221100 -K 0011223344556677 -provider legacy
+>    ```
 
 ### Modos de Operação em *Stream*
 
