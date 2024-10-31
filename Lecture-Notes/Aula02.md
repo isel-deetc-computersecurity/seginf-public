@@ -46,7 +46,7 @@ Como explicado anteriormente, a característica definitiva da criptografia simé
 
 Neste sentido, um uso comum da criptografia simétrica é como **cifra de sessão**, *i.e.*, para cifrar/decifrar dados durante uma sessão de comunicação entre duas ou mais partes. No início da sessão, as partes envolvidas devem, de alguma forma, entrar em acordo numa **chave de sessão**: uma chave simétrica compartilhada (*i.e.*, conhecida por todas as partes) a ser utilizada exclusivamente naquela sessão de comunicação. As chaves de sessão são, portanto, efêmeras: são criadas para uma sessão específica, usadas por relativamente pouco tempo (*i.e.*, o tempo de uma sessão) e depois descartadas.
 
-Não obstante sua típica vantagem em termos de complexidade computacional, a criptografia simétrica tem entre suas desvantagens justamente o processo de **estabelecimento** desta chave simétrica compartilhada. Como a mesma chave deve ser conhecida por todas as partes legitimamente envolvidas na comunicação, mas **não por terceiras partes não autorizada**, o processo de estabelecimento de chaves é normalmente desafiador. Não se pode, por exemplo, transmitir a chave em texto plano entre as partes envolvidas na comunicação, porque um atacante poderia intercetar estas mensagens.
+Não obstante sua típica vantagem em termos de complexidade computacional, a criptografia simétrica tem entre suas desvantagens justamente o processo de **estabelecimento** desta chave simétrica compartilhada. Como a mesma chave deve ser conhecida por todas as partes legitimamente envolvidas na comunicação, mas **não por terceiras partes não autorizadas**, o processo de estabelecimento de chaves é normalmente desafiador. Não se pode, por exemplo, transmitir a chave em texto plano entre as partes envolvidas na comunicação, porque um atacante poderia intercetar estas mensagens.
 
 De facto, esquemas simétricos em geral assumem uma de duas soluções:
 
@@ -66,7 +66,7 @@ Se ignorarmos por ora o problema de estabelecimento da chave de sessão e assumi
 Formalmente, um esquema de cifra simétrica é definido por três componentes:
 
 - Uma função $G(.)$ de geração de chave. Em geral, chaves para cifra simétrica são geradas por funções aleatórias para que o atacante não possa fazer suposições sobre o valor da chave.
-- A função $E(.)$ de cifra. Esta função mapeia um par `(chave, mensagem)` para um criptograma. Esta função deve suportar como entrada mensagens com comprimentos arbitrários. Em outras palavras, qualquer sequência arbitrária de bits pode ser passada como entrada da função $E(.)$. Matematicamente, podemos escrever dizer que a mensagem $m$ em texto plano pertence ao domínio $\{0,1\}^*$.
+- A função $E(.)$ de cifra. Esta função mapeia um par `(chave, mensagem)` para um criptograma. Esta função deve suportar como entrada mensagens com comprimentos arbitrários. Em outras palavras, qualquer sequência arbitrária de bits pode ser passada como entrada da função $E(.)$. Matematicamente, podemos escrever que a mensagem $m$ em texto plano pertence ao domínio $\{0,1\}^*$.
 - A função $D(.)$ de decifra. Esta função mapeia um par `(chave, criptograma)` para uma mensagem em texto plano. Esta função deve suportar como entrada criptogramas com comprimentos arbitrários. Em outras palavras, qualquer sequência arbitrária de bits pode ser passada como entrada da função $D(.)$. Matematicamente, podemos dizer que o criptograma $c$ pertence ao domínio $\{0,1\}^*$.
 
 Dadas estas definições, podemos reescrever o processo de uso de um esquema de cifra simétrica da seguinte forma:
@@ -108,7 +108,6 @@ Lembre-se, no entanto, que Alice não conhece a mensagem original, pelo que, em 
 
 Analogamente, num ataque do tipo *spoofing*, Eva pode enviar um suposto criptograma composto por qualquer sequência aleatória de bytes à Alice, passando-se por Bob. Seja este criptograma aleatório $c''$. Ao recebê-lo, Alice computa $E(k)(c'') = m''$. Mesmo não havendo qualquer relação entre $c''$ e algum criptograma legítimo criado por Bob, Alice não dispõe de qualquer mecanismo que permita identificar que se trata de uma mensagem **não autêntica**.
 
-
 ### Primitivas de Cifra Simétrica
 
 A primitiva de cifra simétrica está no cerne de um esquema de cifra simétrica. Felizmente ou infelizmente, há uma gama considerável de opções. Felizmente porque, como engenheiros, podemos optar pela primitiva que mais se adequa às características do sistema informático que estamos a desenvolver. Por outro lado, nem todas as primitivas são igualmente seguras, o que impõe um ônus adicional ao engenheiro relativamente à escolha de uma boa primitiva.
@@ -133,7 +132,7 @@ Tanto o DES quanto o AES são primitivas da classe das **cifras de bloco**. Rele
 
 Um exemplo mais simples (porém bem menos seguro) de cifra de bloco segue o seguinte modelo:
 
-- Função de geração de chaves $G = k$: gera chaves que corresponde a números inteiros positivos de 64 bits.
+- Função de geração de chaves $G = k$: gera chaves que correspondem a números inteiros positivos de 64 bits.
 - Função de cifra $E(k)(m) = m \oplus k = c$. Aqui, assume-se que a mensagem é representada como um número de 64 bits e o operador $\oplus$ denota a operação XOR bit-a-bit.
 - Função de decifra $D(k)(c) = c \oplus k = m'$. Igualmente, aqui, assume-se que o criptograma é representado como um número de 64 bits.
 
@@ -151,7 +150,7 @@ Esta restrição é bastante inconveniente, dado que gostaríamos que os **esque
 
 Importa também destacar que o tamanho do bloco não necessariamente corresponde ao tamanho da chave utilizada pela primitiva criptográfica. Por exemplo, embora o AES trabalhe com blocos de 128 bits, suas chaves podem ter 128, 192 ou 256 bits. 
 
-De forma geral, os **tamanhos do bloco e da chave têm relação direta com a segurança do método**. Chaves compostas por **muitos bits dificultam os ataques por força bruta**, já que cada bit adicional dobra o número de possíveis chaves, reduzindo a probabilidade de um atacante acercar casualmente a chave em poucas tentativas e aumentando o tempo necessário para testar todas as chaves no pior caso. 
+De forma geral, os **tamanhos do bloco e da chave têm relação direta com a segurança do método**. Chaves compostas por **muitos bits dificultam os ataques por força bruta**, já que cada bit adicional dobra o número de possíveis chaves, reduzindo a probabilidade de um atacante acertar casualmente a chave em poucas tentativas e aumentando o tempo necessário para testar todas as chaves no pior caso. 
 
 Já o tamanho do bloco ajuda a **esconder características estatísticas** do texto. Lembre-se da aula anterior que vimos como a frequência das letras em um criptograma gerado por uma cifra monoalfabética pode ser usada na criptoanálise. Entre outros motivos, esta cifra é susceptível a este tipo de ataque porque usa blocos de uma única letra. Ao aumentarmos o tamanho do bloco para conter várias letras, mascaramos as características estatísticas de cada letra individual, conferindo maior segurança. Uma ressalva é que blocos muito grandes são inconvenientes quando desejamos cifrar informações pequenas: mais à frente, veremos que se a mensagem em texto plano é menor que o tamanho do bloco, o criptograma se torna também maior, necessitando de mais recursos de armazenamento ou transmissão de dados.
 
