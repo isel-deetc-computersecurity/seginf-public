@@ -22,19 +22,26 @@ As primitivas e esquemas assimétricos são, também, frequentemente denominados
 
 De facto, como o nome sugere, a criptografia assimétrica geralmente envolve uma **chave pública** e uma **chave privada**, de modo que o que uma chave faz (*e.g.*, cifrar) e outra desfaz (*e.g.*, decifrar). Como os nomes sugerem, a **chave pública pode ser conhecida por todos**, inclusive por eventuais atacantes. Mesmo assim, as propriedades de segurança são plenamente garantidas. Já a chave privada deve ser mantida em segredo, sendo conhecida apenas por **uma entidade**.
 
-Este último ponto também é muito importante: mesmo se queiramos utilizar criptografia assimétrica para uma comunicação entre Alice e Bob, **apenas Alice deve conhecer sua própria chave privada**. Nem mesmo Bob, uma outra parte legítima da comunicação, deve ter acesso à chave privada de Alice. 
+Este último ponto também é muito importante: mesmo que queiramos utilizar criptografia assimétrica para uma comunicação entre Alice e Bob, **apenas Alice deve conhecer sua própria chave privada**. Nem mesmo Bob, uma outra parte legítima da comunicação, deve ter acesso à chave privada de Alice. 
 
-Por outro lado, Bob deve ter acesso à chave pública de Alice. Mas isto não é um grande obstáculo, dado que esta chave não é secreta. Assim, teoricamente, Alice poderia simplesmente enviar sua chave pública em texto plano para Bob. Aliás, por ser uma chave pública, Alice pode divulgá-la amplamente (*e.g.*, publicar em um anúncio de jornal, colocá-la na descrição pública das suas redes sociais).
+Por outro lado, Bob deve ter acesso à chave pública de Alice. Mas isto não é um grande obstáculo, dado que esta chave não é secreta. Assim, teoricamente, Alice poderia simplesmente enviar sua chave pública em texto plano para Bob. Aliás, por ser uma chave pública, Alice pode divulgá-la amplamente (e.g., publicar em um anúncio de jornal, colocá-la na descrição pública das suas redes sociais).
 
-Um exemplo concreto de divulgação de chaves públicas é o protocolo criptográfico PGP (*Pretty Good Privacy*). Entre outras aplicações, o PGP é popularmente adotado para a transmissão segura de *e-mails*. Embora os detalhes do PGP não sejam relevantes neste ponto da unidade curricular, ele utiliza tanto esquemas simétricos quanto assimétricos. Para os assimétricos, cada utilizador deve ter um **par de chaves pública e privada**. A chave pública deve ser informada a todos que porventura desejem enviar um *e-mail* seguro ao utilizador. Uma forma comum de divulgação é o utilizador emissor do *e-mail* incluir sua chave pública PGP na assinatura da mensagem do *e-mail* enviado. Deste modo, qualquer utilizador receptor deste *e-mail* passa a conhecer a chave pública do emissor.
+Um exemplo concreto de divulgação de chaves públicas é o protocolo criptográfico PGP (*Pretty Good Privacy*). Entre outras aplicações, o PGP é popularmente adotado para a transmissão segura de *e-mails*. Embora os detalhes do PGP não sejam relevantes neste ponto da unidade curricular, ele utiliza tanto esquemas simétricos quanto assimétricos. Para os assimétricos, cada utilizador deve ter um **par de chaves pública e privada**. A chave pública deve ser informada a todos que porventura desejem enviar um *e-mail* seguro ao utilizador. Uma forma comum de divulgação é o utilizador incluir sua chave privada PGP na sua assinatura dos e-mails que envia, de forma que qualquer pessoa que receba um *e-mail* seu passe a conhecer a chave pública.
+
+> [!NOTE]
+>
+>    Exemplos de chaves públicas amplamente divulgadas.
+>
+>    - Um exemplo pode ser um remetente de e-mail que inclui sua chave PGP ao final de suas mensagens.
+>    - Outro exemplo é a chave PGP do cert@cert.pt, disponível em https://www.cncs.gov.pt/en/pgp-key/
 
 ## Chaves Públicas e Privadas: Usos
 
 Repare que tanto a chave pública $k_{pub}$ quanto a chave privada $k_{priv}$ podem ser utilizadas em ambas as funções $E(.)$ e $D(.)$ de uma primitiva simétrica. Ou seja, dada uma mensagem original $m$, é matematicamente possível calcularmos tanto $c = E(k_{priv})(m)$ quanto $c' = E(k_{pub})(m)$. Porém, repare que, em geral, $c \not= c'$. Por outro lado, um criptograma computado com a chave pública pode ser decifrado com a chave privada: $D(k_{priv})(E(k_{pub})(m)) = m$. Analogamente, um criptograma cifrado com a chave privada pode ser decifrado com a chave pública: $D(k_{pub})(E(k_{priv})(m)) = m$.
 
-Por outro lado, um criptograma computado a partir da chave pública **não** é decifrável pela mesma chave pública: $D(k_{pub})(E(k_{pub})(m)) \not= m$. Igualmente, um criptograma computado a partir da chave privada **não** é decifrável pela mesma chave privada: $D(k_{priv})(E(k_{priv})(m)) \not= m$.
+Adicionalmente, um criptograma computado a partir da chave pública **não** é decifrável pela mesma chave pública: $D(k_{pub})(E(k_{pub})(m)) \not= m$. Igualmente, um criptograma computado a partir da chave privada **não** é decifrável pela mesma chave privada: $D(k_{priv})(E(k_{priv})(m)) \not= m$.
 
-Dadas estas características e relações entre as chaves, a pergunta natural é: quando utilizar cada uma das chaves em um esquema assimétrico? A resposta para isto depende da tarefa criptográfica a ser realizada e em ambos os casos devemos nos perguntar **qual é a operação privada?**.
+Dadas estas características e relações entre as chaves, a pergunta natural é: quando utilizar cada uma das chaves em um esquema assimétrico? A resposta para isto depende da tarefa criptográfica a ser realizada e em ambos os casos devemos nos perguntar **qual é a operação privada**.
 
 Para cifras assimétricas, a operação privada é a **decifra**. Ou seja, gostaríamos de permitir que qualquer entidade fosse capaz de enviar uma mensagem cifrada para Alice, mas que apenas Alice fosse capaz de decifrá-la. Note que o inverso faz pouco sentido no contexto da confidencialidade: como a chave pública é, por definição, pública e o que a chave privada cifra a pública decifra, se Alice enviar uma mensagem por um canal inseguro cifrada com a sua chave privada qualquer um será capaz de decifrá-la. 
 
@@ -68,11 +75,11 @@ Uma destas especificidades está na função $G(.)$ de geração de chaves. Isso
 
 Como no caso simétrico, a função $G(.)$ deve ser probabilística, de forma que sua execução gere o par de chaves de forma imprevisível. Do contrário, um atacante poderia facilmente deduzir o par de chaves e, em particular, a chave privada.
 
-Repare, no entanto, que nem todo par $(k_{pub}, k_{priv})$, com $k_{pub} \in PublicKeys, k_{priv} \in PrivateKeys$, corresponde a um par de chaves válido. Em outras palavras: para que obtermos a propriedade desejada de que o que a chave pública cifra a chave privada decifra (e vice-versa), estas chaves precisam preservar algum tipo de relação específica. Logo, nem todo par arbitrário de chaves é viável. Desta forma, apesar de probabilística, a função $G(.)$ deve garantir a geração de pares de chaves corretamente relacionadas.
+Repare, no entanto, que nem todo par $(k_{pub}, k_{priv})$, com $k_{pub} \in PublicKeys, k_{priv} \in PrivateKeys$, corresponde a um par de chaves válido. Em outras palavras: para obtermos a propriedade desejada de que o que a chave pública cifra a chave privada decifra (e vice-versa), estas chaves precisam preservar algum tipo de relação específica. Logo, nem todo par arbitrário de chaves é viável. Desta forma, apesar de probabilística, a função $G(.)$ deve garantir a geração de pares de chaves corretamente relacionadas.
 
 Outra especificidade dos esquemas de cifra assimétrica está no domínio das funções de cifra e decifra, $E(.)$ e $D(.)$. Os exemplos de primitivas simétricas estudados nesta UC eram, de forma geral, primitivas de bloco. Logo, suas funções de cifra e decifra operavam sobre mensagens de texto plano e criptogramas de um tamanho fixo de bits - o tamanho do bloco. Já as primitivas assimétricas, em geral, trabalham com textos planos e criptogramas representados como **números inteiros positivos** menores que um determinado valor limite.
 
-Desta maneira, para cifrar uma mensagem $M$, originalmente na forma de uma *string* de bits, é necessário primeiro um processo de **codificação** de $M$ para a forma de um número inteiro. Um dos desafios desta codificação é garantir que a mesma seja inversível (de forma que, ao decifrar um criptograma, seja possível decodificá-lo de volta para a mensagem original sem ambiguidade). Considere, por exemplo, duas mensagens diferentes `M1 = 01` e `M2 = 001`. Se simplesmente interpretarmos ambas as mensagens como números inteiros em binário, com o bit de maior peso sendo o mais à esquerda, obtemos a mesma representação inteira para ambas: $m1 = m2 = 2$. 
+Desta maneira, para cifrar uma mensagem $M$, originalmente na forma de uma *string* de bits, é necessário primeiro um processo de **codificação** de $M$ para a forma de um número inteiro. Um dos desafios desta codificação é garantir que a mesma seja inversível (de forma que, ao decifrar um criptograma, seja possível decodificá-lo de volta para a mensagem original sem ambiguidade). Considere, por exemplo, duas mensagens diferentes `M1 = 01` e `M2 = 001`. Se simplesmente interpretarmos ambas as mensagens como números inteiros em binário, com o bit de maior peso sendo o mais à esquerda, obtemos a mesma representação inteira para ambas: $m1 = m2 = 1$. 
 
 Logo, é necessária alguma função de codificação mais sofisticada para transformar a *string* de bits original em um número inteiro de forma não ambígua. Na prática, as funções de codificação utilizadas acabam por permitir o mapeamento de qualquer *string* de tamanho **menor que um determinado limite** para valores inteiros do domínio da função de cifra.
 
@@ -90,7 +97,7 @@ Para que um esquema de cifra assimétrica seja considerado seguro, é preciso qu
 
 Assim como ocorre com as cifras simétricas, uma cifra assimétrica não é, a princípio, autenticada. Logo, a simples aplicação da cifra sobre uma mensagem não garante a integridade. Como exemplo, suponha que Bob cifra uma mensagem $m$ com a chave pública de Alice, obtendo o criptograma $c = E(k_{pub})(m)$. Agora suponha que Eva intercepte a transmissão e altere aleatoriamente determinados bits de c, obtendo $c' \not= c$. Ao receber $c'$, Alice aplica a função de decifra obtendo $m' = D(k_{priv})(c')$. Em geral, $m' \not= m$, mas como não conhece $m$, Alice não tem qualquer mecanismo que a permita detetar a falta de integridade da mensagem recebida.
 
-Outra característica comum dos esquemas de cifra assimétricos é a sua alta complexidade computacional - ao menos, em relação aos esquemas simétricos. Embora a complexidade varie de esquema para esquema, de forma geral, esquemas simétricos são bem mais leves. Na prática, é comum haver esquemas assimétricos terem tempos de execução **duas ou mais ordens de grandeza** maiores que os simétricos. Isto acaba por desencorajar a aplicação generalizada dos esquemas assimétricos que, em geral, ficam limitados a casos de uso particulares (embora de grande importância).
+Outra característica comum dos esquemas de cifra assimétricos é a sua alta complexidade computacional - ao menos, em relação aos esquemas simétricos. Embora a complexidade varie de esquema para esquema, de forma geral, esquemas simétricos são bem mais leves. Na prática, é comum esquemas assimétricos terem tempos de execução **duas ou mais ordens de grandeza** maiores que os simétricos. Isto acaba por desencorajar a aplicação generalizada dos esquemas assimétricos que, em geral, ficam limitados a casos de uso particulares (embora de grande importância).
 
 Uma outra consequência da maior complexidade computacional dos esquemas simétricos é a limitação (prática) dos tamanhos das mensagens por eles cifradas. Enquanto cifras simétricas trabalham com mensagens no domínio $\{0, 1\}^*$, as cifras assimétricas comumente estão limitadas a mensagens de uma determinada dimensão máxima. Como já discutido, as cifras simétricas utilizam codificações que mapeiam mensagens de dimensão menor que um determinado limite de bits para valores inteiros positivos, de modo a adequá-las à função de cifra. A princípio, mensagens maiores poderiam ser quebradas em blocos de tamanho menores que o limite da cifra e cifrados de acordo com algum modo de operação, como acontece com as cifras simétricas. Porém, a aplicação sucessiva das funções de cifra e decifra a vários blocos teria custo computacional muito elevado, o que torna esta opção incomum na prática.
 
@@ -98,7 +105,7 @@ Estas últimas características fazem com que o uso mais comum das cifras assim�
 
 ## Princípios da Primitiva RSA
 
-O RSA é a mais popular primitiva assimétrica existente. O nome RSA faz referência aos seus proponentes: Ron Rivest, Adi Shamir e Leonard Adleman. Esta primitiva foi desenvolvida na década de 1970 e até hoje tem sido amplamente utilizada com em esquemas assimétricos.
+O RSA é a mais popular primitiva assimétrica existente. O nome RSA faz referência aos seus proponentes: Ron Rivest, Adi Shamir e Leonard Adleman. Esta primitiva foi desenvolvida na década de 1970 e até hoje tem sido amplamente utilizada em esquemas assimétricos.
 
 A função $G(.)$ geradora de chaves no RSA retorna um par de chaves pública $(E, N)$ e privada $(D, N)$. Repare, portanto, que cada chave é, na verdade, um par de valores. Mais especificamente, $E$, $D$ e $N$ são números inteiros. Note, ainda, que o valor $N$ é parte de ambas as chaves, pública e privada.
 
@@ -175,16 +182,19 @@ Teoricamente, o atacante poderia tentar fatorar $N$ nos seus fatores primos $P$ 
 
 Na prática, dado um $N$ suficientemente grande, é computacionalmente infazível um atacante derivar $E$ e $D$, garantindo o segredo da chave privada.
 
-
 > [!NOTE]
-> Ilustração de geração de chaves RSA com o OpenSSL.
+>
+>    Ilustração da geração de chaves RSA com o OpenSSL.
+>
+>    **Execução:**
+>
 >    - Gerar uma chave privada de 2048 bits para Alice:
 >
 >    ```
 >    # openssl genrsa -out alice_private_key.pem 2048
 >    ```
 >
->    - Observar o conteúdo do ficheiro:
+>    - Mostrar o conteúdo do ficheiro gerado:
 >
 >    ```
 >    # cat alice_private_key.pem 
@@ -218,7 +228,8 @@ Na prática, dado um $N$ suficientemente grande, é computacionalmente infazíve
 >    -----END PRIVATE KEY-----
 >    ```
 >
->    - Observar o conteúdo descodificado do ficheiro:
+>    - Destacar o uso de uma codificação especial (Base64).
+>    - Mostrar o conteúdo descodificado do ficheiro:
 >
 >    ```
 >    # openssl rsa -in alice_private_key.pem -text
@@ -296,7 +307,6 @@ Na prática, dado um $N$ suficientemente grande, é computacionalmente infazíve
 >    Exponent: 65537 (0x10001)
 >    ...
 >    ```
->
 
 
 ## Exemplo de Aplicação do RSA
@@ -319,7 +329,7 @@ $$
 
 Apesar de termos utilizado valores pequenos para o exemplo didático anterior, na prática, o RSA opera sobre valores muito grandes (*e.g.*, números de 2048 bits ou da ordem de $10^{616}$). Devido à necessidade de realizar operações aritméticas com valores bastante elevados, os processos de cifra e decifra do RSA são lentos.
 
-Por este motivo, o uso típico do RSA como cifra assimétrica é como parte de um esquema híbrido simétrico/assimétrico. Neste esquema, uma das partes legítimas da comunicação, digamos Alice, gera um par de chaves RSA publica $K_e$ e privada $K_d$. A chave privada é mantida em segredo por Alice, enquanto a pública é enviada para a outra parte da comunicação, Bob. 
+Por este motivo, o uso típico do RSA como cifra assimétrica é como parte de um esquema híbrido simétrico/assimétrico. Neste esquema, uma das partes legítimas da comunicação, digamos Alice, gera um par de chaves RSA pública $K_e$ e privada $K_d$. A chave privada é mantida em segredo por Alice, enquanto a pública é enviada para a outra parte da comunicação, Bob. 
 
 Como a chave pública não necessita de confidencialidade, seu envio pode, a princípio, ser feito em texto plano. Em aulas posteriores, veremos que este envio da chave pública não é tão trivial assim e apresenta alguns pequenos desafios. Mas, por ora, basta notarmos que se trata de um processo significativamente mais simples que o estabelecimento seguro de uma chave simétrica.
 
@@ -357,7 +367,10 @@ O método de formatação têm múltiplas utilidades. Em primeiro lugar, está a
 É de se notar, também, que métodos de formatação não utilizam de nenhuma forma as chaves pública ou privada. Ao contrário, estas chaves são utilizadas apenas durante a execução das funções de cifra ou decifra da primitiva.
 
 > [!NOTE]
-> Ilustração de uso do RSA (com um método de formatação) para cifrar/decifrar uma mensagem.
+>
+>    Exemplo prático de uso do RSA (com um método de formatação) para cifrar/decifrar uma mensagem.
+>
+>    **Execução:**
 >
 >    - Cifrar uma mensagem usando a chave pública de Alice:
 >
@@ -365,13 +378,47 @@ O método de formatação têm múltiplas utilidades. Em primeiro lugar, está a
 >    # openssl pkeyutl -encrypt -inkey alice_public_key.pem -pubin -in mensagem_rsa.txt -out mensagem.cif
 >    ```
 >
->    - Inspecionar mensagem cifrada e compará-la à mensagem em texto plano. Observar particularmente a diferença em tamanho dos ficheiros.
+>    - Mostrar que mensagens cifrada e em texto plano são muito diferentes, incluindo em tamanho:
+>
+>    ```
+>    # hexdump -C mensagem_rsa.txt 
+>    00000000  55 6d 61 20 6d 65 6e 73  61 67 65 6d 20 71 75 61  |Uma mensagem qua|
+>    00000010  6c 71 75 65 72 0a                                 |lquer.|
+>    00000016
+>
+>    # hexdump -C mensagem.cif 
+>    00000000  9d c1 92 a0 65 4c 58 a2  cf c5 11 6f 02 74 e4 dc  |....eLX....o.t..|
+>    00000010  cb b8 fb 5f 36 1b b4 7f  ba 26 71 a3 6f 7a 56 0e  |..._6....&q.ozV.|
+>    00000020  18 5a d0 b5 aa b5 85 29  f5 f9 e4 37 59 68 43 dd  |.Z.....)...7YhC.|
+>    00000030  b0 5d b2 35 1e c6 10 70  a1 e8 10 72 3d 89 6b c9  |.].5...p...r=.k.|
+>    00000040  c3 33 37 75 70 fd 43 05  1f 90 89 46 49 7c 9e c3  |.37up.C....FI|..|
+>    00000050  3d 87 4a 69 1c 67 c2 4f  8d 7c f9 84 56 cc 6c f3  |=.Ji.g.O.|..V.l.|
+>    00000060  ae cf 5c 1c 56 79 8f 46  2b cd 07 20 89 6f 60 a2  |..\.Vy.F+.. .o`.|
+>    00000070  8b 74 e8 e8 b0 d9 17 c6  86 00 e7 cc 57 38 df 98  |.t..........W8..|
+>    00000080  03 13 04 58 b8 24 9e ac  1c 59 30 d3 ac 9e cb fd  |...X.$...Y0.....|
+>    00000090  43 54 a8 3a d4 52 51 8b  39 cb c3 1b 4e cf e7 cb  |CT.:.RQ.9...N...|
+>    000000a0  82 e6 c6 b7 02 71 7e c2  7a c1 c4 c7 64 cd 14 70  |.....q~.z...d..p|
+>    000000b0  00 09 d5 a9 70 31 56 91  ba 4c ef c4 1c 61 d0 18  |....p1V..L...a..|
+>    000000c0  70 b4 06 e8 a6 bc a6 80  0c 76 19 88 e1 60 68 ad  |p........v...`h.|
+>    000000d0  42 86 83 a5 ef c6 e2 d1  f3 4e 44 51 e3 51 5e d5  |B........NDQ.Q^.|
+>    000000e0  27 73 3d bd b0 16 b1 29  26 05 38 42 b2 11 4c a4  |'s=....)&.8B..L.|
+>    000000f0  98 bb 82 c1 ce 12 a8 60  5d 94 55 84 9b e8 45 e3  |.......`].U...E.|
 >    
+>    ```
+>
+>    - Relembrar que a diferença de tamanho deve-se ao *padding* do método de formatação.
+>
 >    - Decifrar a mensagem com a chave privada de Alice:
 >
 >    ```
 >    # openssl pkeyutl -decrypt -inkey alice_private_key.pem -in mensagem.cif -out mensagem_rsa_decifrada.txt
 >    ```
 >
-
-
+>    - Mostrar a mensagem decifrada:
+>
+>    ```
+>    hexdump -C mensagem_rsa_decifrada.txt 
+>    00000000  55 6d 61 20 6d 65 6e 73  61 67 65 6d 20 71 75 61  |Uma mensagem qua|
+>    00000010  6c 71 75 65 72 0a                                 |lquer.|
+>    00000016
+>    ```
