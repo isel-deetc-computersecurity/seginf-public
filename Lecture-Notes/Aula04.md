@@ -1,5 +1,3 @@
-[Changelog]: # (v0: versão inicial por Diego Passos)
-
 # Aula 04 - Esquemas MAC
 
 Na aula passada, vimos como primitivas simétricas podem ser utilizadas para o propósito de cifra: ou seja, em esquemas criptográficos que objetivam garantir a confidencialidade.
@@ -21,7 +19,7 @@ O problema descrito na seção anterior pode ser resolvido com base em primitiva
 Abstratamente, um esquema MAC é constituído por 3 funções básicas:
 
 - Uma função $G(.)$ de **geração de chaves**, utilizada para gerar a chave $k$ partilhada usada no restante do esquema. Assim como nas cifras simétricas, em geral, $k$ é gerada aleatoriamente para que não possa ser previsível para um atacante.
-- Uma função $T(.)$ ge **geração de marcas**. Esta função tem como argumentos a mensagem $m$ que se deseja autenticar e a chave partilhada $k$. A saída é uma marca $t$ a ser enviada juntamente com a mensagem $m$. Matematicamente, $t = T(k)(m)$.
+- Uma função $T(.)$ de **geração de marcas**. Esta função tem como argumentos a mensagem $m$ que se deseja autenticar e a chave partilhada $k$. A saída é uma marca $t$ a ser enviada juntamente com a mensagem $m$. Matematicamente, $t = T(k)(m)$.
 - Uma função $V(.)$ de **verificação de marcas**. Esta função recebe como parâmetros a chave partilhada $k$, a mensagem $m$ que se deseja verificar e a marca $t$ gerada anteriormente. Como saída, a função retorna um valor binário `true`, se $m$ é íntegro e autêntico, ou `false`, caso contrário.
 
 É importante observar que um esquema MAC deve suportar mensagens $m$ de tamanho arbitrário. Matematicamente, $m \in \{0, 1\}^*$. Além disto, note que, **se confidencialidade não é um requisito**, tanto a mensagem $m$ quanto a marca $t$ podem ser **transmitidas em texto plano** pelo canal de comunicação inseguro: a capacidade de um atacante ver o conteúdo de $m$ e $t$ não deve afetar a efetividade do esquema MAC. 
@@ -49,10 +47,10 @@ Portanto, identificamos assim duas características-chave de uma marca para um e
 1. A marca deve depender, de alguma forma verificável, da chave partilhada $k$.
 2. A informação transportada pela marca deve permitir uma identificação (quase) inequívoca da mensagem original.
 
-Dadas estes dois requisitos, considere agora uma terceira proposta de um esquema MAC hipotético. Nesta terceira proposta, a função $T(.)$ consiste simplesmente na cifra da mensagem $m$ que se deseja autenticar: $t = T(k)(m) = E(k)(M)$. Analogamente, a função de verificação $V(.)$ consiste em cifrar a mensagem recebida e comparar o criptograma resultante com a marca recebida. Mais formalmente, o receptor:
+Dados estes dois requisitos, considere agora uma terceira proposta de um esquema MAC hipotético. Nesta terceira proposta, a função $T(.)$ consiste simplesmente na cifra da mensagem $m$ que se deseja autenticar: $t = T(k)(m) = E(k)(M)$. Analogamente, a função de verificação $V(.)$ consiste em cifrar a mensagem recebida e comparar o criptograma resultante com a marca recebida. Mais formalmente, o receptor:
 
 1. Computa $m' = E(k)(m)$.
-2. Compara $m$ e $m$.
+2. Compara $m'$ e $m$.
     - Se foram iguais, declara-se que a mensagem é íntegra e autêntica.
     - Caso contrário, a mensagem não é integra ou não é autêntica.
 
@@ -72,7 +70,7 @@ Matematicamente, isso equivale a:
 
 $$\forall m \in \{0, 1\}^*, \forall k \in Keys: V(k)(T(k)(m), m) = true$$
 
-Note que a propriedade acima não impõe, adicionalmente, que a função $V(.)$ retorne um valor falso sempre que aplicada à uma mensagem diferente daquela a partir da qual a marca foi gerada. Em outras palavras, **não exige-se** de um esquema MAC correto que:
+Note que a propriedade acima não impõe, adicionalmente, que a função $V(.)$ retorne um valor falso sempre que aplicada a uma mensagem diferente daquela a partir da qual a marca foi gerada. Em outras palavras, **não exige-se** de um esquema MAC correto que:
 
 $$\forall m, m' \in \{0, 1\}^*, m\not= m',  \forall k \in Keys: V(k)(T(k)(m), m') = false$$
 
@@ -94,6 +92,26 @@ Mesmo que o formato da saída de métodos como o *checksum* e o CRC sejam simila
 Por fim, deve-se notar que um esquema MAC **não é capaz de garantir não-repúdio**. Isto porque esquemas MAC baseiam sua autenticação no conhecimento de uma **chave partilhada**. Logo, existem ao menos duas partes legítimas que conhecem a chave e, portanto, dada uma mensagem e sua marca de autenticação, não é possível afirmar com certeza qual das entidades gerou o par `(mensagem, marca)`.
 
 
+> [!NOTE]
+>
+>    Ilustração da geração de um MAC através do `OpenSSL`.
+>    
+>    - Exemplificar comando para geração de um MAC usando HMAC:
+>
+>    ```
+>    # openssl dgst -hmac mysecretkey mensagem.txt
+>    HMAC-SHA256(mensagem.txt)= 078649e2431fd24a882b81cbf9879fe3cdd48400affb267b54ec12d62e693aec
+>    ```
+>
+>    - Destacar na saída do comando a marca gerada.
+>    - Ilustrar como o receptor de uma mensagem utilizaria a marca (e a mensagem) para realizar a verificação.
+>    - Ilustrar como mesmo alterações muito pequenas na mensagem original resultam em marcas potencialmente muito diferentes (e.g., para um ficheiro `mensagem_alterada.txt` com apenas uma letra diferente):
+>
+>    ```
+>    # openssl dgst -hmac mysecretkey mensagem_alterada.txt
+>    HMAC-SHA256(mensagem_alterada.txt)= 19e0e5120fecf255c955df144724877acbcd5574b6e96761a9d929d9cce1d57e
+>    ```
+
 ## Cifra Autenticada
 
 Confidencialidade e integridade / autenticidade são objetivos criptográficos diferentes. Enquanto cifras simétricas garantem confidencialidade e esquemas MAC garantem integridade / autenticidade, a princípio nem um nem outro garante ambas as propriedades simultaneamente. Se determinada aplicação necessita, simultaneamente, de confidencialidade e integridade / autenticidade, é necessária a utilização de uma combinação dos dois esquemas. 
@@ -103,6 +121,55 @@ Uma possibilidade é primeiro cifrar a mensagem e depois gerar a marca sobre o c
 Note na expressão que são utilizadas duas chaves diferentes: uma $k_1$, para o esquema de cifra simétrica, e outra $k_2$, para o esquema MAC. Além de haver a possibilidade de os esquemas MAC e de cifra utilizarem chaves com formatos diferentes (digamos, com tamanhos diferentes), é uma boa prática de segurança **não usar** a mesma chave para dois propósitos diferentes dentro de um mesmo protocolo criptográfico. Isto impede que um atacante tente correlacionar as saídas do MAC e da cifra de modo a ganhar algum conhecimento sobre o texto plano ou sobre a chave.
 
 Alternativamente, pode-se realizar o *MAC-then-encrypt*: primeiro computa-se o MAC sobre o texto plano e depois todo o conjunto é cifrado. Matematicamente: $E(k_1)(m || T(k_2)(m))$. Neste caso, o receptor é obrigado a primeiro realizar a decifra, obtendo a mensagem em texto plano e sua marca, seguida da verificação da marca. Observe, novamente, o uso de chaves distintas para tarefas criptográficas distintas.
+
+> [!NOTE]
+>
+>    Ilustração do *MAC-then-encrypt*.
+>
+>    **Execução:**
+>    
+>    - Calcular o MAC sobre a mensagem em texto plano:
+>
+>    ```
+>    # openssl dgst -hmac mysecretkey mensagem.txt
+>    HMAC-SHA256(mensagem.txt)= 078649e2431fd24a882b81cbf9879fe3cdd48400affb267b54ec12d62e693aec
+>    ```
+>
+>    - Destacar que o MAC é diferente daquele gerado para o criptograma no *encrypt-then-MAC*.
+>    - Anexar o MAC ao ficheiro:
+>
+>    ```
+>    # cp mensagem.txt mensagem_mais_mac.txt
+>    # openssl dgst -hmac mysecretkey -binary mensagem.txt >> mensagem_mais_mac.txt
+>    ```
+>
+>    - Mostrar a mensagem aumentada com o MAC:
+>
+>    ```
+>    hexdump -C mensagem_mais_mac.txt 
+>    ```
+>
+>    - Mostrar que os últimos bytes do ficheiro são idênticos ao MAC do texto plano.
+>    - Cifrar a mensagem concatenada com o MAC:
+>
+>    ```
+>    # openssl enc -des-cbc -e -in mensagem_mais_mac.txt -out mensagem.cif -iv 7766554433221100 -K 0011223344556677 -provider legacy
+>    ```
+>
+>    - Ilustrar o processo de verificação:
+>
+>    ```
+>    # openssl enc -des-cbc -d -in mensagem.cif -out mensagem_mais_mac.dec -iv 7766554433221100 -K 0011223344556677 -provider legacy
+>    # tail -c 32 mensagem_mais_mac.dec > mac.dec
+>    # head -c -32 mensagem_mais_mac.dec > mensagem.dec
+>    # openssl dgst -hmac mysecretkey mensagem.dec
+>    HMAC-SHA256(mensagem.dec)= 078649e2431fd24a882b81cbf9879fe3cdd48400affb267b54ec12d62e693aec
+>    # hexdump -C mac.dec
+>    00000000  07 86 49 e2 43 1f d2 4a  88 2b 81 cb f9 87 9f e3  |..I.C..J.+......|
+>    00000010  cd d4 84 00 af fb 26 7b  54 ec 12 d6 2e 69 3a ec  |......&{T....i:.|
+>    00000020
+>
+>    ```
 
 Em teoria, o *encrypt-then-MAC* apresenta algumas ligeiras vantagens. Em primeiro lugar, ele permite a verificação da autenticidade antes da decifra, o que economiza tempo caso a mensagem recebida seja forjada. Isso também dificulta alguns ataques específicos de texto cifrado escolhido, como o *padding oracle attack*, brevemente discutido na última aula. Por outro lado, Ferguson and Schneier afirmam que o *encrypt-then-MAC* é mais susceptível a erros por parte do projetista da solução, porque nem sempre é suficiente que o MAC seja aplicado sobre o texto cifrado. Por exemplo, para cifras que utilizam IV, este muitas vezes é transmitido em texto plano junto ao criptograma. Neste caso, é importante que o MAC seja calculado sobre todo o conjunto, incluindo o IV.
 
@@ -114,6 +181,7 @@ Além das abordagens *encrypt-then-MAC* e *MAC-then-encrypt* que combinam esquem
 
 Em termos de funcionamento, o GCM combina o modo CTR com o cálculo de uma função *hash* chamada GHASH em um único fluxo de operação. Assim como no CTR, gera-se um fluxo de chave utilizando um contador cujo valor inicial é derivado a partir do IV e a chave $k$. Este fluxo de chave é combinado com o texto plano através da operação XOR bit-a-bit, resultando no texto cifrado. 
 
-No entanto, ao invés de limitar-se a geração deste texto cifrado, o modo GCM o utiliza como entrada da função GHASH - portanto, uma abordagem do tipo *encrypt-then-MAC*. Além do texto cifrado, também passa-se pela GHASH um AAD (*Additional Authentication Data*), que é qualquer dado adicional que não deva ser cifrado, mas que necessite autenticação. De forma simplificada, a GHASH corresponde ao cálculo do valor de um polinómio em um ponto específico $H$. Tanto o AAD quanto os blocos de texto cifrado são tratados como coeficientes no cálculo do polinómio. Esta avaliação do polinómio é realizada com operações em no grupo finito GF(128) - de onde vem a referência ao matemático Évariste Galois no nome do modo. O resultado final do GHASH é, então, combinado com o primeiro bloco do fluxo de chave através de um XOR. 
+No entanto, ao invés de limitar-se a geração deste texto cifrado, o modo GCM o utiliza como entrada da função GHASH - portanto, uma abordagem do tipo *encrypt-then-MAC*. Além do texto cifrado, também passa-se pela GHASH um AAD (*Additional Authentication Data*), que é qualquer dado adicional que não deva ser cifrado, mas que necessite autenticação. De forma simplificada, a GHASH corresponde ao cálculo do valor de um polinômio em um ponto específico $H$. Tanto o AAD quanto os blocos de texto cifrado são tratados como coeficientes no cálculo do polinômio. Esta avaliação do polinômio é realizada com operações em no grupo finito GF(128) - de onde vem a referência ao matemático Évariste Galois no nome do modo. O resultado final do GHASH é, então, combinado com o primeiro bloco do fluxo de chave através de um XOR. 
 
 Note, no entanto, que este nível de detalhe sobre a matemática que embasa o método não é relevante para esta UC. Para os nossos propósitos, basta sabermos que o GCM combina cifra e MAC em um único modo, permitindo, adicionalmente, a autenticação de dados não cifrados (o AAD).
+
