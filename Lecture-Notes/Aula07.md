@@ -1,6 +1,8 @@
+[Changelog]: # (v0: versão inicial por Diego Passos)
+
 # Aula 07 - Assinatura Digital e Introdução ao JCA
 
-Na aula anterior, começamos a estudar esquemas e primitivas criptográficas assimétricas. Vimos que esta família de métodos caracteriza-se pelo uso de chaves distintas para operações criptográficas distintas. Em particular, uma das chaves é dita uma **chave pública** e pode ser conhecida por todos - inclusive eventuais atacantes - sem risco para a segurança do esquema. Por outro lado, há também a chave privada que, como o nome sugere, deve ser mantida em segredo pela entidade que a gera. Vimos também como utilizar as primitivas assimétricas em esquemas de cifra - neste caso, cifras assimétricas. Nestes esquemas, as mensagens são cifradas com a **cifra com a chave pública do receptor**. Ao receber a mensagem cifrada, o receptor a decifra com a sua própria chave privada.
+Na aula anterior, começamos a estudar esquemas e primitivas criptográficas assimétricas. Vimos que esta família de métodos caracteriza-se pelo uso de chaves distintas para operações criptográficas distintas. Em particular, uma das chaves é dita uma **chave pública** e pode ser conhecida por todos - inclusive eventuais atacantes - sem risco para a segurança do esquema. Por outro lado, há também a chave privada que, como o nome sugere, deve ser mantida em segredo pela entidade que a gera. Vimos também como utilizar as primitivas assimétricas em esquemas de cifra - neste caso, cifras assimétricas. Nestes esquemas, as mensagens são cifradas com a **chave pública do receptor**. Ao receber a mensagem cifrada, o receptor as decifra com a sua própria chave privada.
 
 Lembre-se, ainda, que em aulas anteriores estudamos os esquemas MAC: esquemas criptográficos simétricos que visam garantir a integridade / autenticidade das mensagens.
 
@@ -22,7 +24,7 @@ A ideia básica da assinatura digital é similar a dos esquemas MAC: gerar algum
 
 Note que, num processo de assinatura digital, há duas fases: a geração da assinatura (ou seja, a marca) e a posterior verificação. Como expectável, a geração da assinatura deve ser realizada pela entidade que originou a mensagem. Por outro lado, gostaríamos que qualquer outra entidade fosse capaz de realizar a verificação da autenticidade da assinatura. Desta forma, **a verificação (feita por qualquer entidade) só pode se dar através da chave pública**. Ao mesmo tempo, se queremos que apenas a entidade legítima seja capaz de assinar determinada mensagem, a **assinatura deve ser feita com a chave privada**. Repare que isto é exatamente o **inverso do que ocorre nas cifras assimétricas**.
 
-Outra característica peculiar da assinatura digital em relação aos esquemas MAC é a **durabilidade** das chaves assimétricas. Conforme discutido em aulas anteriores, esquemas de cifra simétrica frequentemente utilizam **chaves de sessão**, *i.e.*, chaves efêmeras estabelecidas para uma sessão específica de comunicação e depois esquecidas. Por este motivo, uma marca gerada por um esquema MAC computada sobre uma chave de sessão tende a só ser útil durante aquela sessão, perdendo a capacidade de verificabilidade a longo prazo. Chaves assimétricas, por outro lado, são utilizadas por períodos tipicamente bem mais longos (anos, talvez décadas). Assim, é possível verificar assinaturas digitais mesmo que geradas há anos atrás. Isto faz com que assinaturas digitais sejam particularmente interessantes para garantir a integridade / autenticidade de documentos utilizados múltiplas vezes e a longo prazo (*e.g.*, um contrato de uma transação financeira).
+Outra característica peculiar da assinatura digital em relação aos esquemas MAC é durabilidade das chaves assimétricas. Conforme discutido em aulas anteriores, esquemas de cifra simétrica frequentemente utilizam **chaves de sessão**, *i.e.*, chaves efêmeras estabelecidas para uma sessão específica de comunicação e depois esquecidas. Por este motivo, uma marca gerada por um esquema MAC computada sobre uma chave de sessão tende a só ser útil durante aquela sessão, perdendo a capacidade de verificabilidade a longo prazo. Chaves assimétricas, por outro lado, são utilizadas por períodos tipicamente bem mais longos (anos, talvez décadas). Assim, é possível verificar assinaturas digitais mesmo que geradas há anos atrás. Isto faz com que assinaturas digitais sejam particularmente interessantes para garantir a integridade / autenticidade de documentos utilizados múltiplas vezes e a longo prazo (*e.g.*, um contrato de uma transação financeira).
 
 Uma questão importante ao discutir-se o esquema de assinatura digital é a obtenção da **chave pública correta** para a verificação da assinatura. Suponha que uma atacante, Eva, envia uma mensagem a Bob passando-se por Alice. Como Eva não conhece a chave privada de Alice, ela não deve ser capaz de gerar uma assinatura correta para a mensagem forjada. No entanto, o que impede Eva de gerar um par de chaves pública e privada arbitrárias, assinar a mensagem forjada com esta chave privada e enviar a chave pública a Bob dizendo ser a chave de Alice? 
 
@@ -40,11 +42,11 @@ Além da nomenclatura diferente (assinatura digital *vs.* marca), os esquemas MA
 
 De maneira mais formal, um esquema de assinatura digital é composto por três funções: uma função $G(.)$ de geração de chaves, uma função $S(.)$ de assinatura e uma função $V(.)$ de verificação da assinatura.
 
-A função $G(.)$ de um esquema de assinatura digital é equivalente à função homónima que definimos na última aula para as cifras assimétricas. Trata-se, portanto, de uma função probabilística - dado que a chave gerada deve ser imprevisível para um atacante - mas que necessita gerar um par de chaves (pública e privada) que "façam sentido" em conjunto. Dito de outra forma: embora seja necessário haver componentes aleatórios na escolha da chave, as chaves pública e privada devem ser relacionadas de acordo com as propriedades necessárias ao funcionamento da primitiva assimétrica utilizada. No caso do RSA, em particular, isto significa obedecerem às relações adequadas dos valores $N$, $E$ e $D$, conforme estudamos na aula anterior.
+A função $G(.)$ de um esquema de assinatura digital é equivalente à função homônima que definimos na última aula para as cifras assimétricas. Trata-se, portanto, de uma função probabilística - dado que a chave gerada deve ser imprevisível para um atacante - mas que necessita gerar um par de chaves (pública e privada) que "façam sentido" em conjunto. Dito de outra forma: embora seja necessário haver componentes aleatórios na escolha da chave, as chaves pública e privada devem ser relacionadas de acordo com as propriedades necessárias ao funcionamento da primitiva assimétrica utilizada. No caso do RSA, em particular, isto significa obedecerem às relações adequadas dos valores $N$, $E$ e $D$, conforme estudamos na aula anterior.
 
 A função $S(.)$ recebe como entradas a chave privada e a mensagem $m$ a ser assinada, e tem como saída uma assinatura $s$. Assim como ocorria nos esquemas MAC, é importante que a função $S(.)$ seja capaz de processar mensagens de tamanho arbitrário ($m \in \{0,1\}^*$). Por outro lado, é desejável que as assinaturas retornadas pela função tenham comprimento fixo e, idealmente, relativamente pequeno (ao menos, em comparação com as mensagens potencialmente grandes que se pode desejar assinar).
 
-Já a função $V(.)$ recebe como entradas a assinatura $s$, a mensagem $m$ e a chave pública da entidade que supostamente a originou. Como saída, tem-se um valor binário que indica se a assinatura corresponde ou não à mensagem de origem.
+Já a função $V(.)$ recebe como entradas a assinatura $s$, a mensagem $m$ e a chave pública da entidade que supostamente a originou. Como saída, tem-se um valor booleano que indica se a assinatura corresponde ou não à mensagem e a origem.
 
 ## Assinatura Digital: Implementação
 
@@ -113,37 +115,79 @@ Isto traz uma flexibilidade significativa para os esquemas de assinatura digital
 
 Como uma última observação, repare que, ao contrário dos esquemas MAC, embora a assinatura digital envolva chaves e funções de *hash*, as chaves são utilizadas apenas pela primitiva assimétrica.
 
+> [!NOTE]
+>    Geração e verificação de assinaturas digitais com o `openssl`.
+>
+>    - Assinar um ficheiro testo qualquer:
+>
+>    ```bash
+>    $ openssl dgst -sign alice_private_key.pem -sha256 -out assinatura.sig mensagem.txt
+>    ```
+>
+>    - Exibir conteúdo do ficheiro que contém a assinatura:
+>
+>    ```bash
+>    $ hexdump -C assinatura.sig 
+>    00000000  4c 4a f5 9c e0 78 b9 0f  b9 c4 6c 9d 40 2e 24 0a  |LJ...x....l.@.$.|
+>    00000010  ad 8e e2 08 b7 ab 9b 2a  e3 b2 3b b6 28 a5 9d ff  |.......*..;.(...|
+>    00000020  48 bb 45 ce 88 de 28 ca  96 c7 e2 e2 24 1a 9a d6  |H.E...(.....$...|
+>    00000030  39 23 59 d8 f4 6c 6d cc  9c 62 1a 07 a3 3c 79 e4  |9#Y..lm..b...<y.|
+>    00000040  b4 a3 25 1e 65 7d 94 43  82 dd a2 49 13 78 bf ab  |..%.e}.C...I.x..|
+>    00000050  31 ab 55 fb f2 6e 3f 24  53 26 42 e9 99 9c ec 45  |1.U..n?$S&B....E|
+>    00000060  80 04 d8 7b 6b c5 49 17  99 b4 12 45 23 5c c9 42  |...{k.I....E#\.B|
+>    00000070  1b 5c 33 f8 02 09 6e 39  f8 41 b5 c0 ce c0 03 45  |.\3...n9.A.....E|
+>    00000080  b0 ac 7a ed fe f6 26 e0  90 b4 95 67 79 4b 58 69  |..z...&....gyKXi|
+>    ...
+>    ```
+>
+>    - Mostrar processo de verificação:
+>
+>    ```bash
+>    $ openssl dgst -verify alice_public_key.pem -sha256 -signature assinatura.sig mensagem.txt
+>    Verified OK
+>    ```
+>
+>    - Destacar que verificação foi bem sucedida.
+>    - Modificar o ficheiro e realizar a verificação novamente:
+>
+>    ```bash
+>    $ openssl dgst -verify alice_public_key.pem -sha256 -signature assinatura.sig mensagem_modificada.txt 
+>    Verification failure
+>    40E7C8EC727F0000:error:02000068:rsa routines:ossl_rsa_verify:bad signature:../crypto/rsa/rsa_sign.c:430:
+>    40E7C8EC727F0000:error:1C880004:Provider routines:rsa_verify:RSA lib:../providers/implementations/signature/rsa_sig.c:774:
+>    ```
+
 ## JCA: Introdução
 
-A JCA (*Java Cryptography Architecture*) é uma API criptográfica padronizada para a linguagem Java. Ela fornece acesso à esquemas criptográficos e funções auxiliares para a execução de tarefas criptográficas básicas, como cifras, MACs, *hashes*, assinaturas, geração de chaves e geração de números pseudo-aleatórios seguros. Com base na JCA, pode-se construir protocolos criptográficos completos para aplicações e sistemas informáticos em geral.
+A JCA (*Java cryptography Architecture*) é uma API criptográfica padronizada para a linguagem Java. Ela fornece acesso à esquemas criptográficos e funções auxiliares para a execução de tarefas criptográficas básicas, como cifras, MACs, *hashes*, assinaturas, geração de chaves e geração de números pseudo-aleatórios. Com base na JCA, pode-se construir protocolos criptográficos completos para aplicações / sistemas informáticos.
 
-Dois pontos-chave do desenho da JCA são sua independência de implementação e de algoritmos. **Independência de algoritmos** significa que a JCA fornece uma API genérica para o acesso aos principais tipos de esquemas e tarefas criptográficas, de forma que a **estrutura do código** que utiliza a JCA permanece muito similar - quase idêntica - mesmo se utilizarmos algoritmos diferentes. Por exemplo, suponha um programa em JCA que realize a cifra de ficheiros especificados pelo utilizador, gerando o texto cifrado como sua saída. Versões deste programa utilizando a cifra DES-ECB ou AES-CBC podem ser praticamente idênticas, diferindo, possivelmente, em uma única linha (ou mesmo, em uma única *string*). 
+Dois pontos-chave do desenho da JCA são sua independência de implementação e de algoritmos. **Independência de algoritmos** significa que a JCA fornece uma API genérica para o acesso aos principais tipos de esquemas e tarefas criptográficas, de forma que a **estrutura do código** que utiliza a JCA permanece muito similar - quase idêntica - mesmo se utilizarmos algoritmos diferentes. Por exemplo, suponha um programa em JCA que realize a cifra de ficheiros especificados pelo utilizador, gerando o texto cifrado como sua saída. Versões deste programa utilizando a cifra DES-EBC ou AES-CBC podem ser praticamente idênticas, diferindo, possivelmente, em uma única linha (ou mesmo, em uma única *string*). 
 
-A independência de algoritmos é uma característica muito positiva da JCA, tendo-se em vista que algoritmos criptográficos tornam-se obsoletos com o tempo. Logo, um código em JCA tende a ser naturalmente genérico e de fácil adaptação para o uso de outros / novos algoritmos.
+A independência de algoritmo é uma característica muito positiva da JCA, tendo-se em vista que algoritmos criptográficos tornam-se obsoletos com o tempo. Logo, um código em JCA tende a ser naturalmente genérico e de fácil adaptação para o uso de outros / novos algoritmos.
 
 Por outro lado, a **independência de implementação** significa que a JCA também é genérica em termos de qual implementação de um dado algoritmo é utilizada. Mais concretamente, a JCA permite a escolha entre várias implementações alternativas de um mesmo algoritmo (digamos, uma cifra AES-GCM) através de alterações pontuais no código da aplicação. Mais especificamente, a implementação particular de um esquema pode ser escolhida manipulando-se um único parâmetro de um método, sem que isto afete de qualquer forma o restante do código. Aliás, em certas situações, é possível alterar a implementação utilizada apenas através de ficheiros de configuração.
 
 Como no caso da independência de algoritmo, a independência de implementação é um recurso extremamente útil dado que implementações outrora consideradas seguras podem vir a tornar-se inseguras (*e.g.*, uma vez que um *bug* ou vulnerabilidade seja descoberta). Assim, a habilidade de facilmente chavearmos entre implementações diferentes de um mesmo algoritmo é valiosa.
 
-Além disso, a JCA também garante a **interoperabilidade** entre estas implementações. Isto significa, por exemplo, que é possível gerar a assinatura digital de um documento com uma implementação de determinado esquema e depois fazer a verificação da mesma com outra implementação diferente. Isto é essencial ao passo que garante a interoperabilidade entre aplicações que correm em sistemas ou plataformas diferentes.
+Além disto, a JCA também garante a interoperabilidade entre estas implementações. Isto significa, por exemplo, que é possível gerar a assinatura digital de um documento com uma implementação de determinado esquema e depois fazer a verificação da mesma com outra implementação diferente. Isto é essencial ao passo que garante a interoperabilidade entre aplicações que correm em sistemas ou plataformas diferentes.
 
-Estas características de independência de algoritmos e implementação significam que podemos entender a JCA como uma estrutura hierárquica. Do ponto de vista das classes manipuladas pela aplicação, são utilizadas interfaces genéricas para esquemas criptográficos (*e.g.*, cifra), independentemente do algoritmo particular escolhido. Abaixo destas interfaces genéricas encontram-se classes particulares que definem cada algoritmo (*e.g.*, DES-CBC com *padding* PKCS#5). Finalmente, no último nível, temos as implementações concretas, que podem ser múltiplas para cada algoritmo.
+Estas características de independência de algoritmos e implementação significam que podemos entender a JCA como uma estrutura hierárquica. Do ponto de vista das classes manipuladas pela aplicação, são utilizadas interfaces genéricas para esquemas criptográficos (*e.g.*, cifra), independentemente do algoritmo particular escolhido. Abaixo destas interfaces genéticas encontram-se classes particulares que definem cada algoritmo (*e.g.*, DES-CBC com *padding* PKCS#5). Finalmente, no último nível, temos as implementações concretas, que podem ser múltiplas para cada algoritmo.
 
 ## JCA: Arquitetura
 
-Há três componentes fundamentais da arquitetura da JCA: os *Cryptographic Service Providers* (ou CSPs), as *Engine Classes* e as *Specification Classes*.
+Há três componentes fundamentais da arquitetura da JCA: os Cryptographic Service Providers (ou CSPs), as *Engine Classes* e as *Specification Classes*.
 
 Os ***Cryptographic Service Provider*** são *packages* ou classes que provêm implementações concretas de um ou mais serviços criptográficos. Nas versões do JDK (*Java Development Kit*) distribuídas pela Oracle, são fornecidos *providers* como o `Sun`, o `SunRsaSign`, e o `SunJCE`. No entanto, a JCA é flexível e permite a implementação de outros *providers*. Mesmo que não queiramos nós próprios implementar um *provider*, é possível instalar *providers* de terceiros no ambiente de execução da aplicação para utilização com nossas aplicações.
 
 As ***Engine Classes*** são o cerne da API JCA da perspectiva da aplicação. Trata-se de um conjunto de classes que representam de maneira abstrata esquemas criptográficos e outras funcionalidades acessórias. Estas classes não implementam de facto os esquemas criptográficos - isto é feito pelos *providers*. No entanto, elas provêm uma interface padronizada para a seleção e manipulação de tais esquemas, independente dos algoritmos particulares desejados. 
 
-A utilização de uma *Engine Class* começa através da chamada ao método estático `getInstance()`. Este método (com várias sobrecargas) recebe um ou mais argumentos que, entre outras coisas, especificam os algoritmos criptográficos a serem utilizados. Como consequência, a `getInstance()` retorna um objeto da *Engine Class* que permite a execução das tarefas associadas ao esquema criptográfico solicitado.
+A utilização de uma *Engine Class* começa através da chamada ao método estático `getInstance()`. Este método recebe um ou mais argumentos que, entre outras coisas, especificam os algoritmos criptográficos a serem utilizados. Como consequência, a `getInstance()` retorna um objeto da *Engine Class* que permite a execução das tarefas associadas ao esquema criptográfico solicitado.
 
 As *Engine Classes* têm por característica serem **opacas**. Isto significa que estas classes expõem apenas funções e comportamentos necessários à execução das tarefas criptográficas (*e.g.*, um método que realiza a verificação de uma assinatura digital). Detalhes internos, como os valores das chaves utilizadas, são totalmente escondidos por estas classes.
 
 Por vezes, no entanto, precisamos de acesso a estes detalhes, seja para lê-los (por exemplo, descobrir o IV utilizado para cifrar uma mensagem de forma a enviá-lo para a outra parte legítima da comunicação) ou para especificá-lo (por exemplo, usar um valor de chave específico recebido da outra parte). 
 
-Nestes casos, são utilizadas as ***Specification Classes***. Estas classes fornecem representações transparentes de parâmetros dos esquemas criptográficos (por exemplo, chaves, IVs). A transparência significa que a aplicação pode solicitar a leitura de detalhes daquele elemento (*e.g.*, os valores de $P$ e $Q$ que deram origem a uma chave RSA). Podemos também fazer o sentido inverso: preencher uma *Specification Class* com informações por nós especificadas. Em geral, as *Specification Classes* provêm métodos que retornam estas informações acerca dos parâmetros em formatos padronizados que podem ser utilizados por outros sistemas.
+Nestes casos, são utilizadas as ***Specification Classes***. Estas classes fornecem representações transparentes de parâmetros dos esquemas criptográficos (por exemplo, chaves, IVs). A transparência significa que a aplicação pode solicitar a leitura de detalhes daquele elemento (*e.g.*, os valores de $P$ e $Q$ que deram origem a uma chave RSA). Podemos também fazer o sentido inverso: preencher uma *specification class* com informações por nós especificadas. Em geral, as *specification Classes* provêm métodos que retornam estas informações acerca dos parâmetros em formatos padronizados que podem ser utilizados por outros sistemas.
 
 ## *Providers*
 
@@ -186,7 +230,7 @@ security.provider.12=SunPKCS11
 ...
 ```
 
-Se quiséssemos registar um novo *provider* neste ambiente, bastaria adicionarmos uma nova linha ao final deste troço com o conteúdo `security.provider.13=<nome provider>`.
+Se quiséssemos registar um novo *provider* neste ambiente, bastaria adicionarmos uma nova linha ao final deste trecho com o conteúdo `security.provider.13=<nome provider>`.
 
 Alternativamente, podemos fazer o registo dinâmico de um *provider*. Ou seja, independentemente do conteúdo fo ficheiro `java.security` podemos, programaticamente, solicitar o registo de um *provider*. Isto é feito através de uma classe especial da JCA chamada `Security`. Esta classe fornece métodos tanto para o registo de *providers* quanto para obtermos uma lista dos *providers* atualmente registados e dos algoritmos por eles disponibilizados.
 
@@ -314,14 +358,14 @@ Neste ponto, já citamos algumas vezes que o primeiro parâmetro do método `get
 Na verdade, a *string* de transformação especifica - ou pode especificar - todo um esquema criptográfico. Isso tipicamente inclui o nome de uma primitiva ou função de *hash* (*e.g.*, `"AES"`, `"MD5"`), mas também pode incluir a especificação de métodos adicionais, como modos de operação ou *padding*. Em geral, para cada *engine class* há um determinado formato geral das *strings* de formatação suportadas. Alguns exemplos:
 
 - Classe `Cipher`. Suporta dois formatos: "algorithm/mode/padding ou "algorithm". No primeiro caso, especifica-se completamente o esquema, enquanto no segundo especifica-se apenas a primitiva. Neste último caso, a própria JCA seleciona um modo de operação e *padding*. Diversas primitivas são suportadas (*e.g.*, `AES`, `DES`, `DESede`, `RSA`, ...), bem como modos (*e.g.*, `ECB`, `CBC`, `CFB`, `CTR`, `OFB`, ...) e estratégias de *padding* (*e.g.*, `PKCS5Padding`, `PKCS1Padding`, `OAEPPadding`, ...)
-- Classe `Mac`. Nos casos de uso mais comuns, o formato geral é constituído do prefixo "Hmac" concatenado com o nome de uma função de *hash* (*e.g.*, `MD5`, `SHA1`, `SHA256`, ...). Por exemplo, para um HMAC utilizando a função de *hash* SHA-256, a *string* de transformação seria `"HmacSHA256"`.
+- Classe `Mac`. Nos casos de uso mais comuns, o formato geral é constituído do prefixo "Hmac" concatenado com o nome de uma função de *hash* (e.g., `MD5`, `SHA1`, `SHA256`, ...). Por exemplo, para um HMAC utilizando a função de *hash* SHA-256, a *string* de transformação seria `"HmacSHA256"`.
 - Classe `Signature`. O formato geral é "<hash>with<primtiva>". Ou seja, concatena-se o nome de uma função de *hash*, o termo "with" e o nome de uma primitiva assimétrica. Alguns exemplos são: `"MD5withRSA"`, `"SHA256withRSA"`, `"SHA512withDSA"`.
 - Classe `KeyGenerator`. Quando a chave a ser gerada é para uma cifra, a *string* deve conter o nome da primitiva (*e.g.*, `AES`). Quando a chave a ser gerada é para um esquema MAC, deve-se utilizar o mesmo formato usado para a Classe `Mac`.
 - Classe `KeyPairGenerator`. Em geral, a *string* é simplesmente o nome da primitiva na qual a chave será utilizada (*e.g.*, `"RSA"`).
 
 As *strings* de transformação não são sensíveis a caixa, pelo que `"AES"` e `"aes"`, por exemplo, são totalmente equivalentes.
 
-Devido às muitas possíveis combinações, a documentação da JCA provê uma lista exaustiva com todas as possíveis *strings* de transformação para cada classe, bem como especificações quanto aos formatos gerais. Isto pode ser encontrado no Apêndice A do "Java Cryptography Architecture (JCA) Reference Guide" (disponível em https://docs.oracle.com/javase/8/docs/technotes/guides/security/crypto/CryptoSpec.html) ou, mais recentemente, no "Java Cryptography Architecture Standard Algorithm Name Documentation for JDK 8" (disponível em https://docs.oracle.com/javase/8/docs/technotes/guides/security/StandardNames.html).
+Devido às muitas possíveis combinações, a documentação da JCA provê uma lista exaustiva com todas as possíveis *strings* de transformação para cada classe, bem como especificações quanto aos formatos gerais. Isto pode ser encontrado no Apêndice A do "Java Cryptography Architecture (JCA) Reference Guide" (disponível em https://docs.oracle.com/javase/8/docs/technotes/guides/security/crypto/CryptoSpec.html) ou, mais recentemente, no "Java Cryptography Architecture Standard Algorithm Name Documentation for JDK 8" (disponível em https://docs.oracle.com/javase/8/docs/technotes/guides/security/StandardNames.html#Signature).
 
 
 ## A Classe *Cipher*
@@ -341,7 +385,7 @@ Uma vez inicializado o objeto da classe `Cipher`, este disponibiliza 4 métodos 
 - `wrap()`: `Key → byte[]` – cifra chave.
 - `unwrap()`: `byte[], ... → Key` – decifra chave.
 
-Ambos os métodos `update()` e `doFinal()` são utilizados para cifrar ou decifrar uma mensagem - a depender do modo especificado na inicialização. Ambos recebem como argumento um *array* de bytes que representa o texto plano ou o texto cifrado, a depender do modo operacional. Igualmente, o retorno é um *array* de bytes que representa o texto cifrado (no modo operacional de cifra) ou o texto decifrado (no modo operacional de decifra). 
+Ambos os métodos `update()` e `doFinal()` são utilizados para cifrar ou decifrar uma mensagem - a depender do modo especificado na inicialização. Ambos recebem como argumento um *array* de bytes que representa o texto plano ou o texto cifrado, a depender do caso. Igualmente, o retorno é um *array* de bytes que representa o texto cifrado (no modo de cifra) ou o texto decifrado (no modo de decifra). 
 
 Mas por que, então, há dois métodos para cifra ou decifra? E quando se deve utilizar cada um deles?
 
@@ -376,7 +420,7 @@ Neste trecho, inicializa-se um objeto `cipher` previamente instanciado no modo d
 
 Embora os trechos de código anteriores funcionem, em certas situações, um programa pode ter apenas acesso gradual a pedaços do texto a ser cifrado ou decifrado. Neste caso, o método `update()` permite que a cifra ou decifra seja feita também de forma gradual: a cada novo pedaço do texto a que temos acesso, fazemos uma chamada ao método `update()`. Cada chamada ao `update()` retorna o próximo pedaço do texto cifrado / decifrado. Porém, mesmo neste modo, é sempre necessário fazermos uma chamada final ao método `doFinal()`, que retornará a porção final do texto cifrado / decifrado.
 
-Considere, como exemplo, o seguinte troço de código:
+Considere, como exemplo, o seguinte trecho de código:
 
 ```Java
 // Obtém linha da entrada padrão in (Scanner) e adiciona
@@ -399,6 +443,6 @@ c = concatBytes(c, tmp);
 
 Aqui, o código realiza a leitura, linha por linha, de uma *string* longa provida pelo utilizador através do teclado. O processo termina quando o utilizador prime a tecla `<enter>` em uma linha vazia (o que é sinalizado pela chamada `in.nextLine()` retornar uma *string* vazia). 
 
-Como a mensagem a ser cifrada é disponibilizada gradativamente, há duas possibilidades. Na primeira, poderíamos acumular a mensagem em texto plano em uma variável e, só quando tivéssemos toda a mensagem disponível, chamaríamos o método `doFinal()`. No entanto, podemos evitar este trabalho com a utilização do método `update()`: a cada nova linha lida, realizamos um `update()` sobre o conteúdo daquela linha. Os troços de texto cifrado retornados pelas sucessivas chamadas ao método `update()` são, então, concatenados na variável `c`.
+Como a mensagem a ser cifrada é disponibilizada gradativamente, há duas possibilidades. Na primeira, poderíamos acumular a mensagem em texto plano em uma variável e, só quando tivéssemos toda a mensagem disponível, chamaríamos o método `doFinal()`. No entanto, podemos evitar este trabalho com a utilização do método `update()`: a cada nova linha lida, realizamos um `update()` sobre o conteúdo daquela linha. Os trechos de texto cifrado retornados pelas sucessivas chamadas ao método `update()` são, então, concatenados na variável `c`.
 
 Note que na penúltima linha do trecho ainda há uma chamada ao método `doFinal()`. Como dito anteriormente, isto é inegociável: esta chamada precisa ser realizada para finalizarmos o processo de cifra e obtermos os últimos bytes do texto cifrado. Porém, note que aqui há algo diferente: o método `doFinal()` é chamado sem nenhum parâmetro. Isto ocorre porque, da forma como este programa foi estruturado, não se sabe *a priori* qual será a última linha da mensagem. Por este motivo, mesmo esta última linha é cifrada através de uma chamada ao método `update()`, pelo que não resta nenhuma parte do texto plano a ser cifrado com o `doFinal()`. Nestes casos, deve-se utilizar o `doFinal()` sem argumentos como ilustrado aqui.
