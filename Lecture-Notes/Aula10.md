@@ -24,7 +24,7 @@ CertificateFactory cf = CertificateFactory.getInstance("X.509");
 
 Neste exemplo, como argumento do método `getInstance()` passamos uma *string* que identifica que a instância desejada da `CertificateFactory` deve manipular certificados X.509.
 
-A partir de uma instância da `CertificateFactory`, temos acesso à diversos métodos úteis. Um deles é o `generateCertificate()`. Este método recebe como parâmetro um objeto do tipo `InputStream` - *e.g.*, um ficheiro, um *socket* -, realiza a leitura de um ou mais certificados e retorna-os como objetos do tipo `Certificate`. Há duas sobrecargas deste método: uma que retorna um único `Certificate` e outra que retorna uma coleção de `Certificate`. Esta última é particularmente útil quando fazemos a leitura de vários certificados que compõem uma cadeia ou caminho de certificação.
+A partir de uma instância da `CertificateFactory`, temos acesso a diversos métodos úteis. Um deles é o `generateCertificate()`. Este método recebe como parâmetro um objeto do tipo `InputStream` - *e.g.*, um ficheiro, um *socket* -, realiza a leitura de um ou mais certificados e retorna-os como objetos do tipo `Certificate`. Há duas sobrecargas deste método: uma que retorna um único `Certificate` e outra que retorna uma coleção de `Certificate`. Esta última é particularmente útil quando fazemos a leitura de vários certificados que compõem uma cadeia ou caminho de certificação.
 
 Vejamos um exemplo de como este método pode ser utilizado para a leitura de um certificado a partir de um ficheiro:
 
@@ -47,8 +47,8 @@ Uma vez obtido um objeto do tipo `X509Certificate`, este pode ser utilizado para
 
 ```Java
 // Mostra informações básicas do certificado
-System.out.println("Sujeito: " + certificate.getSubjectX500Principal());
-System.out.println("Emissor: " + certificate.getIssuerX500Principal());
+System.out.println("Sujeito: " + certificate.getSubjectX500Principal().getName());
+System.out.println("Emissor: " + certificate.getIssuerX500Principal().getName());
 
 // Obtém a chave pública do certificado.
 PublicKey pk = certificate.getPublicKey();
@@ -73,8 +73,15 @@ System.out.print("Assinatura: ");
 prettyPrint(certificate.getSignature());
 
 // Verifica a validade do período do certificado.
-certificate.checkValidity();
-System.out.println("Certificado válido (período de validade)");
+try {
+        certificate.checkValidity();
+        System.out.println("Certificado válido (período de validade)");
+}
+catch(Exception E) {
+
+        System.out.println("Certificado expirado ou ainda não válido!");
+}
+
 ```
 
 As duas primeiras linhas ilustram o acesso aos nomes do sujeito e do emissor do certificado. Isto é feito através dos métodos `getSubjectX500Principal()` e `getIssuerX500Principal()` (seguidos do método `getName()`).
@@ -117,7 +124,7 @@ ks.load(
 
 A instanciação do objeto `KeyStore` é feita com o método estático `getInstance()`, o qual recebe como parâmetro uma *string* que define o tipo de *Key Store* a ser manipulada (neste exemplo, `PKCS12`). Em seguida, podemos utilizar o método `load` do objeto para carregar as informações do ficheiro da *Key Store*. 
 
-Note que *Key Stores* são protegidas por palavras-passe. Mais especificamente, a *Key Store* tem uma palavra-passe associada a todo o repositório utilizada para fins de verificação de integridade. O uso da palavra-passe fica evidente no troço de código acima, sendo informada como o segundo parâmetro do método `load()` (neste exemplo, a palavra passe é `"changeit"`).
+Note que *Key Stores* são protegidas por palavras-passe. Mais especificamente, a *Key Store* tem uma palavra-passe associada a todo o repositório utilizada para fins de verificação de integridade. O uso da palavra-passe fica evidente no troço acima, sendo informada como o segundo parâmetro do método `load()` (neste exemplo, a palavra passe é `"changeit"`).
 
 
 Ao carregarmos um objeto `KeyStore` a partir de um ficheiro de *Key Store*, cada entrada no ficheiro recebe um *alias* no formato de uma *string*. Este *alias* funciona como um identificador através do qual podemos referenciar uma **entrada** específica da *Key Store*. É possível obter uma lista dos *aliases* de todas as entradas contidas na *Key Store* através do método `aliases()`, conforme ilustrado abaixo:
@@ -136,8 +143,8 @@ while(entries.hasMoreElements()) {
     X509Certificate cert = (X509Certificate) ks.getCertificate(alias);
 
     // Imprimir informações básicas do certificado
-    System.out.println("Sujeito: " + cert.getSubjectX500Principal());
-    System.out.println("Emissor: " + cert.getIssuerX500Principal());
+    System.out.println("Sujeito: " + cert.getSubjectX500Principal().getName());
+    System.out.println("Emissor: " + cert.getIssuerX500Principal().getName());
     
     PublicKey publicKey = cert.getPublicKey();
     PrivateKey privateKey = (PrivateKey) ks.getKey(alias, "changeit".toCharArray());
@@ -149,7 +156,7 @@ while(entries.hasMoreElements()) {
 
 O troço basicamente itera pelos *aliases* da *Key Store*. Para cada um deles, utiliza-se o método `getCertificate()` do objeto `KeyStore` que retorna o certificado da entrada associada. Como visto em exemplos anteriores, podemos utilizar este objeto para aceder a informações do certificado (*e.g.*, nomes do emissor e do sujeito), além de extrair a chave pública.
 
-No entanto, a chave privada não se encontra no certificado, pelo que se faz necessário obtê-la (separadamente) a partir do *Key Store*. Isto é feito através do método `getKey()` utilizando-se o mesmo *alias* usado para obtenção do certificado. Note, aqui, que o método `getKey()` também recebe como um de seus parâmetros uma palavra-passe. Embora a palavra passe utilizada neste exemplo seja a mesma utilizada anteriormente para o *load* da *Key Store*, isto é meramente uma coincidência. Na prática, cada entrada que contém material confidencial - chaves privadas ou secretas - têm sua palavra-passe individual (e, portanto, potencialmente diferente das demais). Além disso, note que a palavra-passe de uma entrada é utilizada para confidencialidade daquela entrada, enquanto a da *Key Store* como um todo é para integridade da *Key Store* inteira.
+No entanto, a chave privada não se encontra no certificado, pelo que se faz necessário obtê-la (separadamente) a partir do *Key Store*. Isto é feito através do método `getKey()` utilizando-se o mesmo *alias* usado para obtenção do certificado. Note, aqui, que o método `getKey()` também recebe como um de seus parâmetros uma palavra-passe. Embora a palavra passe utilizada neste exemplo seja a mesma utilizada anteriormente para o *load* da *Key Store*, isto é meramente uma coincidência. Na prática, cada entrada que contém material confidencial - chaves privadas ou secretas - tem sua palavra-passe individual (e, portanto, potencialmente diferente das demais). Além disso, note que a palavra-passe de uma entrada é utilizada para confidencialidade daquela entrada, enquanto a da *Key Store* como um todo é para integridade da *Key Store* inteira.
 
 Cada tipo de entrada de uma *Key Store* corresponde a classes diferentes, nomeadamente `PrivateKeyEntry`, `SecretKeyEntry` e `TrustedCertificateEntry`. Cada uma destas três classes, por sua vez, fornece métodos distintos para acesso ao respetivo material criptográfico. Por exemplo, a `PrivateKeyEntry` fornece os métodos `getCertificate()`, `getCertificateChain()` e `getPrivateKey()`. A `SecretKeyEntry` fornece o método `getSecretKey()`. Já a `TrustedCertificateEntry` fornece o método `getTrustedCertificate()`.
 
@@ -165,7 +172,7 @@ Em um dos exemplos desta aula, vimos como obter ler um certificado a partir de u
 
 O nome deste método, no entanto, pode induzir-nos ao erro de acreditar que este realiza todas as verificações necessárias do certificado. Na verdade, como vimos naquele exemplo, este método verifica apenas a validade do certificado relativamente às suas datas de validade inicial e final. Ou seja, um retorno positivo deste método nos diz apenas que o certificado não está expirado.
 
-A validação do certificado em sentido mais amplo é um processo bem mais complexo. Como vimos na última aula, isto envolve a verificação da assinatura digital do certificado que, por sua vez, envolve a obtenção da chave pública do emissor, possivelmente em outro certificado. Além disto, precisamos garantir que o caminho de validação eventualmente chegue a um certificado raiz de confiança (*i.e.*, o certificado de um *trust anchor*). Além disto, pode haver outros aspectos a verificar, como se o certificado em questão foi revogado.
+A validação do certificado em sentido mais amplo é um processo bem mais complexo. Como vimos na última aula, isto envolve a verificação da assinatura digital do certificado que, por sua vez, envolve a obtenção da chave pública do emissor, possivelmente em outro certificado. Além disto, precisamos garantir que o caminho de validação eventualmente chegue a um certificado raiz de confiança (*i.e.*, o certificado de um *trust anchor*). Adicionalmente, pode haver outros aspectos a verificar, como se o certificado em questão foi revogado.
 
 Tudo isto aponta para a necessidade realizarmos um processo mais extenso - em termos, por exemplo, de número de linhas de código - para validarmos toda a cadeia de certificação.
 
@@ -209,7 +216,7 @@ Para que a verificação deste caminho seja bem sucedida, é preciso que o progr
 
 Como o nome sugere, a `TrustAnchor` representa um *trust anchor* dentro da API. Por sua vez, as informações de uma instância desta classe são, em geral, obtidas a partir de um certificado raiz. 
 
-Por sua vez, a `PKIXParameters` é uma classe que representa um conjunto de parâmetros utilizados para o processo de validação no âmbito de uma PKIX - trata-se de uma implementação de uma interface mais genérica chamada `CertPathParameters`. Um destes parâmetros é justamente uma coleção de objetos do tipo `TrustAnchor`. Dito de outra forma, trata-se do conjunto de certificados raiz de confiança a serem utilizados no processo de validação de um caminho de certificação.
+Já a `PKIXParameters` é uma classe que representa um conjunto de parâmetros utilizados para o processo de validação no âmbito de uma PKIX - trata-se de uma implementação de uma interface mais genérica chamada `CertPathParameters`. Um destes parâmetros é justamente uma coleção de objetos do tipo `TrustAnchor`. Dito de outra forma, trata-se do conjunto de certificados raiz de confiança a serem utilizados no processo de validação de um caminho de certificação.
 
 De volta ao exemplo anterior, podemos obter uma instância apropriada da classe `PKIXParameters` da seguinte forma:
 
@@ -277,8 +284,8 @@ Se não houve exceção, então a validação foi bem-sucedida e, portanto, pode
 > Ilustração dos problemas inerentes ao método de construção manual do caminho de certificados.
 >
 > - No exemplo de código provido nesta seção, realizar duas pequenas alterações:
->   - No troço de código que carrega o certificado folha, carregar o certificado da AC intermédia primeiro.
->   - No troço de código que carrega o certificado da AC intermédia, carregar o certificado folha.
+>   - No troço que carrega o certificado folha, carregar o certificado da AC intermédia primeiro.
+>   - No troço que carrega o certificado da AC intermédia, carregar o certificado folha.
 > - Compilar e correr esta versão alternativa. Notar que esta versão alternativa termina com uma exceção do tipo `CertPathValidatorException`, porque o caminho especificado não é consistente.
 
 ## Validação de Cadeias: a Classe `CertPathBuilder`
@@ -292,7 +299,7 @@ Antes de solicitarmos que a classe `CertPathBuilder` faça a construção do cam
 - Um conjunto de *trust anchors*. Mais precisamente, uma coleção (*e.g.*, um `Set`) de objetos do tipo `TrustAnchor`.
 - Um conjunto de outros certificados, incluindo o certificado folha que se deseja validar e certificados intermédios que compõem caminhos de certificação.
 - Uma especificação de qual certificado folha desejamos validar naquele momento.
-de código
+
 Note que, os dois primeiros itens, *trust anchors* e outros certificados, não precisam conter apenas os certificados relevantes para a validação do certificado folha. Ao contrário, podemos ter um grande número de certificados diversos que não serão utilizados neste processo.
 
 Há duas formas de passarmos esta coleção de *trust anchors* para um objeto da classe `PKIXBuilderParameters`, ambas no seu construtor. A primeira é especificando um objeto `KeyStore` a partir do qual os certificados raiz serão carregados como *trust anchors*. A segunda é explicitamente construindo um `Set` de objetos `TrustAnchor` lidos diretamente a partir de ficheiros (de forma similar ao que fizemos no exemplo da seção anterior). Algo como:
@@ -321,13 +328,13 @@ CertStore certStore = CertStore.getInstance("Collection", new CollectionCertStor
 
 O primeiro bloco neste troço de código simplesmente lê vários certificados a partir de ficheiros (enumerados num array `CERT_PATHS`), cria objetos `X509Certificate` através de uma `CertificateFactory` e acumula-os em uma coleção qualquer - neste caso, um `ArrayList`.
 
-As duas últimas linhas fazem a criação do `CertStore` em si. Por se tratar de uma *engine class*, a instanciação do objeto é feita através do método estático *getInstance()*. Neste caso, há dois parâmetros. O primeiro é a especificação do tipo de `CertStore`. Há dois tipos disponíveis: o `"Collection"` e o `"LDAP"`. Num `CertStore` do tipo `"Collection"`, os certificados são obtidos através de um objeto do tipo coleção (*e.g.*, um `ArrayList`). Já um `CertStore` do tipo `"LDAP"` busca certificados a partir de uma base de dados LDAP. Neste exemplo, utilizamos um `CertStore` do tipo `"Collection"`, já que os certificados já estão disponíveis num `ArrayList`. 
+As duas últimas linhas fazem a criação do `CertStore` em si. Por se tratar de uma *engine class*, a instanciação do objeto é feita através do método estático *getInstance()*. Neste caso, há dois parâmetros. O primeiro é uma a especificação do tipo de `CertStore`. Há dois tipos disponíveis: o `"Collection"` e o `"LDAP"`. Num `CertStore` do tipo `"Collection"`, os certificados são obtidos através de um objeto do tipo coleção (*e.g.*, um `ArrayList`). Já um `CertStore` do tipo `"LDAP"` busca certificados a partir de uma base de dados LDAP. Neste exemplo, utilizamos um `CertStore` do tipo `"Collection"`, já que os certificados já estão disponíveis num `ArrayList`. 
 
 O segundo parâmetro do método `getInstance()` é um objeto do tipo `CertStoreParameters`. Mais especificamente, caso a `CertStore` seja do tipo `"Collection"`, precisamos de um objeto da subclasse `CollectionCertStoreParameters`. Do contrário, o objeto deve ser da subclasse `LDAPCertStoreParameters`. Para a subclasse `CollectionCertStoreParameters`, o construtor recebe como argumento uma coleção de objetos `Certificate`.
 
 Assim, após a execução da última linha do troço de código acima, obtemos um objeto chamado `certStore` que corresponde a um repositório de certificados diversos, incluindo tanto certificados folha quanto certificados intermédios. É fundamental que o certificado folha que desejamos verificar esteja nesta `certStore`.
 
-O terceiro parâmetro que precisamos especificar é a informação de qual certificado exatamente queremos validar. Ou seja: dentre os vários certificados na `certStore`, qual é o certificado a partir do qual o caminho de certificação deve ser construído?
+Voltando a criação de uma instância da classe `PKIXBuilderParameters`, o terceiro parâmetro que precisamos especificar é a informação de qual certificado exatamente queremos validar. Ou seja: dentre os vários certificados na `certStore`, qual é o certificado a partir do qual o caminho de certificação deve ser construído?
 
 Esta especificação é realizada com base no conceito de **seletor**. Neste contexto, um seletor é um conjunto de critérios utilizados para selecionar certos certificados dentro de um conjunto. Na API, seletores são representados pela interface `CertSelector` e pela classe concreta `X509CertSelector`. 
 
@@ -377,25 +384,5 @@ CertPath certPath = certPathBuilderResult.getCertPath();
 
 Como trata-se de uma *engine class*, a instanciação é feita por meio do método estático `getInstance()`. Neste caso, especificamos que desejamos um `CertPathBuilder` para a construção de um caminho de certificação no âmbito de uma PKIX. Dada a instância da classe, podemos utilizar o método `build` para a construção do caminho. Este método recebe como parâmetro um `CertPathParameters` ou, no caso específico de uma PKIX, um `PKIXBuilderParameters`, conforme gerado nos troços de código anteriores. 
 
-Se não for possível construir o caminho, dados os parâmetros especificados no `PKIXBuilderParameters`, o método `build()` é levantada uma exceção do tipo `CertPathBuilderException`. Caso contrário, a chamada retorna um objeto do tipo `CertPathBuilderResult`. Neste último caso, o objeto do tipo `CertPathBuilderResult` fornece o método `getCertPath()` que, por sua vez, retorna um `CertPath` especificando o caminho de certificação desejado.
-
-Finalmente, os objetos `CertPath` e `PKIXBuilderParameters` podem ser usados para realizar a validação do caminho de forma análoga ao que foi feito no exemplo da seção anterior. Para isto, instanciamos um objeto da classe `CertPathValidator` e usamos o método `validate()`:
-
-```Java
-try {
-
-    CertPathValidator certPathValidator = CertPathValidator.getInstance("PKIX");
-    certPathValidator.validate(certPath, certPathParameters);
-} catch (InvalidAlgorithmParameterException iape) {
-
-    System.err.println("Validação falhou: " + iape);
-    System.exit(1);
-
-} catch (CertPathValidatorException cpve) {
-
-    System.err.println("Validação falhou: " + cpve);
-    System.err.println("índice do certificado que causou a falha: " + cpve.getIndex());
-    System.exit(1);
-}
-```
+Se não for possível construir o caminho, dados os parâmetros especificados no `PKIXBuilderParameters`, o método `build()` levanta uma exceção do tipo `CertPathBuilderException`. Esta exceção também é levantada caso o caminho de certificação seja inválido. Caso contrário, a chamada retorna um objeto do tipo `CertPathBuilderResult`. Neste último caso, o objeto do tipo `CertPathBuilderResult` fornece o método `getCertPath()` que, por sua vez, retorna um `CertPath` especificando o caminho de certificação desejado.
 
