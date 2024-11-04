@@ -6,7 +6,7 @@ const FormData = require('form-data');// more info at:
 // https://jwt.io/#libraries
 const jwt = require('jsonwebtoken');
 
-const port = 3001
+const PORT = 3001
 
 // system variables where Client credentials are stored
 const CLIENT_ID = process.env.CLIENT_ID
@@ -43,7 +43,7 @@ app.get('/login', (req, resp) => {
         + 'response_type=code&'
         
         // redirect uri used to register RP
-        + 'redirect_uri=http://localhost:3001/'+CALLBACK)
+        + 'redirect_uri=http://localhost:'+PORT+'/'+CALLBACK)
 })
 
 
@@ -58,7 +58,7 @@ app.get('/'+CALLBACK, (req, resp) => {
     form.append('code', req.query.code);
     form.append('client_id', CLIENT_ID);
     form.append('client_secret', CLIENT_SECRET);
-    form.append('redirect_uri', 'http://localhost:3001/'+CALLBACK);
+    form.append('redirect_uri', 'http://localhost:'+PORT+'/'+CALLBACK);
     form.append('grant_type', 'authorization_code');
     //console.log(form);
 
