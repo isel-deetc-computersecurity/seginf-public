@@ -96,9 +96,9 @@ app.get('/'+CALLBACK, (req, resp) => {
       });
 })
 
-app.listen(port, (err) => {
+app.listen(PORT, (err) => {
     if (err) {
         return console.log('something bad happened', err)
     }
-    console.log(`server is listening on ${port}`)
+    console.log(`server is listening on ${PORT}`)
 })
