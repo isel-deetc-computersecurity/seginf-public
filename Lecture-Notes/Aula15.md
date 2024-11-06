@@ -442,33 +442,31 @@ Ao final, estas três componentes são concatenadas (utilizando-se o carácter p
 eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c
 ```
 
-!!! Abstract Demonstração
-    **Objetivo:** mostrar a construção de um JWT utilizando ferramentas de linha de comando.
-
-    **Execução:**
-
-    - Começar pela codificação do *header* e do *payload* em Base64:
-
-    ```bash
-    $  echo -n '{"typ":"JWT","alg":"HS256"}' | basenc --base64url
-    eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9
-    $ echo -n '{"sub":"1234567890","name":"John Doe","iat":1516239022}' | basenc --base64url
-    eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ==
-    ```
-
-    - Destacar que o padding deve ser removido.
-    - Calcular o HMAC SHA-256 e codificar:
-
-    ```bash
-    $ echo -n eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ | openssl dgst -hmac minhachave -binary  | basenc --base64url
-    0uMPyy-Ywsc0o0xInIhxSpoN8WA0JTDsozn_fw5thx4=
-    ```
-
-    - Juntar todas as componentes, obtendo:
-
-    ```
-    eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.0uMPyy-Ywsc0o0xInIhxSpoN8WA0JTDsozn_fw5thx4
-    ```
+> [!NOTE]
+> Ilustração da construção de um JWT utilizando ferramentas de linha de comando.
+> 
+> - Começar pela codificação do *header* e do *payload* em Base64:
+> 
+> ```bash
+> $  echo -n '{"typ":"JWT","alg":"HS256"}' | basenc --base64url
+> eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9
+> $ echo -n '{"sub":"1234567890","name":"John Doe","iat":1516239022}' | basenc --base64url
+> eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ==
+> ```
+> 
+> - Destacar que o padding deve ser removido.
+> - Calcular o HMAC SHA-256 e codificar:
+> 
+> ```bash
+> $ echo -n eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ | openssl dgst -hmac minhachave -binary  | basenc --base64url
+> 0uMPyy-Ywsc0o0xInIhxSpoN8WA0JTDsozn_fw5thx4=
+> ```
+> 
+> - Juntar todas as componentes, obtendo:
+> 
+> ```
+> eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.0uMPyy-Ywsc0o0xInIhxSpoN8WA0JTDsozn_fw5thx4
+> ```
 
 #### Exemplo com JWT
 
