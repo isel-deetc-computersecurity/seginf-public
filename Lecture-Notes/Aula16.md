@@ -76,14 +76,14 @@ Como resultado do processo de registo, o ***authorization server* emite** ao men
 
 No caso de um *client* confidencial -- *i.e.*, com capacidade de armazenar com confidencialidade credenciais de autenticação --, o servidor **também emite algum tipo de credencial**, denominada um `client_secret`. O OAuth 2.0 não especifica exatamente o tipo de credencial a ser utilizada, mas opções comuns são *passwords* ou pares de chave pública e privada.
 
-!!! abstract Demonstração
-    **Objetivo:** mostrar um exemplo real de registo de uma aplicação *client* no OAuth 2.0.
-
-    **Execução:** 
-
-    - Aceder à página de registo de aplicações *client* do Github ou outro servidor de autorização.
-    - Destacar as informações solicitadas.
-    - Se possível, realizar um registo para mostrar as credenciais geradas pelo servidor para a aplicação.
+> [!Note]
+>    **Objetivo:** mostrar um exemplo real de registo de uma aplicação *client* no OAuth 2.0.
+>
+>    **Execução:** 
+>
+>    - Aceder à página de registo de aplicações *client* do Github ou outro servidor de autorização.
+>    - Destacar as informações solicitadas.
+>    - Se possível, realizar um registo para mostrar as credenciais geradas pelo servidor para a aplicação.
 
 ## OAuth 2.0: Acesso a Recursos Protegidos
 
