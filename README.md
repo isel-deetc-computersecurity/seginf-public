@@ -2,7 +2,7 @@
 
 Welcome to the **Computer Security Repository**! This repository was created as part of the **Computer Security course** at 
 the Engineering School of the Polytechnic University of Lisbon. 
-It serves as a centralized resource for course examples preented during the lectures and used in assignments.
+It serves as a centralized resource for examples presented during the lectures and used in assignments.
 
 ![ISEL](logos/isel.png)  
 ![IPL](logos/ipl.png)
