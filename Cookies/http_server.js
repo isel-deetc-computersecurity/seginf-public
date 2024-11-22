@@ -32,7 +32,7 @@ app.get('/setcookies', (req, resp) => {
 })
 
 const crypto = require('crypto');
-const hmac = crypto.createHmac('sha256', 'changeit');
+const hmac = crypto.createHmac('sha256', 'changeit'); // DON'T use hardcoded values, use an environment variable or some kind of a secrets repository
 
 app.get('/setcookies-hmac', (req, resp) => {
     resp.statusCode = 200;
