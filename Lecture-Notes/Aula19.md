@@ -526,7 +526,7 @@ A hierarquia de papéis nos diz que o papel $r_0$ é júnior relativamente aos p
 
 A partir desta hierarquia, notamos, portanto, que, embora o utilizador $u_2$ esteja associado apenas ao papel $r_4$, como este é sénior de $r_2$ e de $r_0$, $u_2$ herda todas as permissões destes últimos. Análises similares podem ser realizadas para os utilizadores $u_1$ e $u_4$.
 
-Dadas estas relações, é possível verificar qualquer condição de tentativa de acesso a recursos que possa ocorrer no sistema. Por exemplo, suponha que o acesso a um determinado recurso requeira as permissões $p_a$ e $p_c$. Quais utilizadores podem realizar este acesso?
+Dadas estas relações, é possível verificar qualquer condição de tentativa de acesso a recursos que possa ocorrer no sistema. Por exemplo, suponha que o acesso a um determinado recurso requeira as permissões $p_a$ e $p_b$. Quais utilizadores podem realizar este acesso?
 
 Ao observarmos o conjunto $PA$, notamos que as permissões $p_a$ e $p_b$ estão associadas aos papéis $r_0$ e $r_3$, respetivamente. O papel $r_0$ é júnior de todos os demais na hierarquia, pelo que qualquer utilizador associado a um papel automaticamente herdará a permissão $p_a$. 
 
