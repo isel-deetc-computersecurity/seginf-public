@@ -15,7 +15,7 @@ const CLIENT_SECRET = process.env.CLIENT_SECRET
 const CALLBACK = 'callback'
 
 const app = express()
-app.use(cookieParser());
+app.use(cookieParser())
 
 app.get('/', (req, resp) => {
     resp.send('<a href=/login>Use Google Account</a>')
@@ -46,7 +46,9 @@ app.get('/login', (req, resp) => {
         + 'redirect_uri=http://localhost:'+PORT+'/'+CALLBACK)
 })
 
-
+//
+// Exchange the 'code' by the 'access_token' 
+// 
 app.get('/'+CALLBACK, (req, resp) => {
     //
     // TODO: check if 'state' is correct for this session
@@ -80,7 +82,7 @@ app.get('/'+CALLBACK, (req, resp) => {
         console.log(jwt_payload)
 
         // a simple cookie example
-        resp.cookie("DemoCookie", jwt_payload.email)
+        resp.cookie("SessionCookie", jwt_payload.email)
         // HTML response with the code and access token received from the authorization server
         resp.send(
             '<div> callback with code = <code>' + req.query.code + '</code></div><br>' +
