@@ -13,9 +13,9 @@ openssl enc -des-cbc -d -nopad -in mensagem.cif -out mensagem_original.txt -iv 7
 openssl enc -aes-128-ctr -e -in msg.txt -out msg-aes-ctr.cif -iv 0ed425637bb85abc9790850627b2355d -K 42c2771f807215802dff1329fa7bf2cf
 openssl enc -aes-128-ctr -d -in msg-aes-ctr.cif -out msg_original.txt -iv 0ed425637bb85abc9790850627b2355d -K 42c2771f807215802dff1329fa7bf2cf
 
+# HMAC old syntax
 # hmac com sha256 using key "myscretkey"
 openssl dgst -hmac mysecretkey mensagem.txt
 
-# sha256
-openssl dgst -sha256 messagem.txt
-
+# HMAC new syntax
+openssl mac -digest SHA256 -macopt key:mysecretkey -in msg.txt HMAC
