@@ -26,7 +26,7 @@ Abstratamente, um esquema MAC é constituído por 3 funções básicas:
 
 Mas como podemos realizar um esquema MAC concretamente? O que exatamente é a marca gerada pela função $T(.)$ e como podemos garantir que um atacante não consegue forjá-la para uma mensagem não autentica? Além disto, como exatamente funcionaria a função de verificação $V(.)$? Há muitas possíveis variações factíveis de esquemas MAC, então analisaremos algumas abordagens hipotéticas.
 
-Como uma primeira tentativa, considere a ideia de que a marca $t$ é um pequeno documento digital que contém informações sobre a informação a ser autenticada: *e.g.*, o nome da entidade autora da informação, o tamanho da mensagem $m$ em bits, entre outras. Ao receber a mensagem e a marca pelo canal inseguro, Alice verificaria a identidade da entidade autora para garantir que trata-se de Bob e faria verificações das demais características da mensagem (por exemplo, se o tamanho da mensagem recebida corresponde ao que é informado na marca).
+Como uma primeira tentativa, considere a ideia de que a marca $t$ é um pequeno documento digital que contém informações sobre a informação a ser autenticada: *e.g.*, o nome da entidade autora da informação, o tamanho da mensagem $m$ em bits, entre outras. Ao receber a mensagem e a marca pelo canal inseguro, Alice verificaria a identidade da entidade autora para garantir que se trata de Bob e faria verificações das demais características da mensagem (por exemplo, se o tamanho da mensagem recebida corresponde ao que é informado na marca).
 
 Não é difícil ver que esta abordagem não é eficaz. Isso porque um atacante que modifique uma mensagem legítima ou forge uma mensagem própria pode perfeitamente forjar também a marca, preenchendo-a com informações consistentes com a sua mensagem falsa, mas com a identificação de Bob. Note, ainda, que em momento algum esta abordagem utilizou a chave partilhada entre Bob e Alice.
 
@@ -49,12 +49,12 @@ Portanto, identificamos assim duas características-chave de uma marca para um e
 
 Dados estes dois requisitos, considere agora uma terceira proposta de um esquema MAC hipotético. Nesta terceira proposta, a função $T(.)$ consiste simplesmente na cifra da mensagem $m$ que se deseja autenticar: $t = T(k)(m) = E(k)(M)$. Analogamente, a função de verificação $V(.)$ consiste em cifrar a mensagem recebida e comparar o criptograma resultante com a marca recebida. Mais formalmente, o receptor:
 
-1. Computa $m' = E(k)(m)$.
-2. Compara $m'$ e $m$.
+1. Computa $t' = E(k)(m)$.
+2. Compara $t'$ e $t$.
     - Se foram iguais, declara-se que a mensagem é íntegra e autêntica.
     - Caso contrário, a mensagem não é integra ou não é autêntica.
 
-O quão resistente este esquema é relativamente aos ataques anteriores? Se um atacante tenta construir uma mensagem $m''$ forjada do zero, por não conhecer a chave correta $k$, ele não conseguirá computar um criptograma que decodifique para o conteúdo exato de $m''$. Logo, a verificação de Alice deverá detectar que se trata de uma mensagem falsa. Por outro lado, se o atacante interceta uma mensagem legítima de Bob e altera bits aleatoriamente, ele precisaria, sem conhecer $k$, conseguir fazer alterações pontuais no criptograma de forma que, ao ser decifrado, este resultasse na mesma mensagem alterada. Assumindo que isso seja infazível computacionalmente na cifra simétrica utilizada (note que alguns esquemas permitem este tipo de modificação), o atacante não seria bem sucedido.
+O quão resistente este esquema é relativamente aos ataques anteriores? Se um atacante tenta construir uma mensagem $m''$ forjada do zero, por não conhecer a chave correta $k$, ele não conseguirá computar uma marca que seja decifrada para o conteúdo exato de $m''$. Logo, a verificação de Alice deverá detetar que se trata de uma mensagem falsa. Por outro lado, se o atacante interceta uma mensagem legítima de Bob e altera bits aleatoriamente, ele precisaria, sem conhecer $k$, conseguir fazer alterações pontuais no criptograma de forma que, ao ser decifrado, este resultasse na mesma mensagem alterada. Assumindo que isso seja infazível computacionalmente na cifra simétrica utilizada (note que alguns esquemas permitem este tipo de modificação), o atacante não seria bem sucedido.
 
 ## Propriedades do MAC
 
@@ -68,11 +68,11 @@ Destas, a propriedade mais básica é a da correção. Um esquema MAC correto ga
 
 Matematicamente, isso equivale a:
 
-$$\forall m \in \{0, 1\}^*, \forall k \in Keys: V(k)(T(k)(m), m) = true$$
+$$\forall m \in \lbrace0, 1\rbrace^*, \forall k \in Keys: V(k)(T(k)(m), m) = true$$
 
-Note que a propriedade acima não impõe, adicionalmente, que a função $V(.)$ retorne um valor falso sempre que aplicada a uma mensagem diferente daquela a partir da qual a marca foi gerada. Em outras palavras, **não exige-se** de um esquema MAC correto que:
+Note que a propriedade acima não impõe, adicionalmente, que a função $V(.)$ retorne um valor falso sempre que aplicada a uma mensagem diferente daquela a partir da qual a marca foi gerada. Em outras palavras, **não se exige** de um esquema MAC correto que:
 
-$$\forall m, m' \in \{0, 1\}^*, m\not= m',  \forall k \in Keys: V(k)(T(k)(m), m') = false$$
+$$\forall m, m' \in \lbrace 0, 1\rbrace^*, m\not= m',  \forall k \in Keys: V(k)(T(k)(m), m') = false$$
 
 De facto, como veremos na próxima aula mesmo bons esquemas MAC são susceptíveis a **colisões**: duas mensagens diferentes *podem* ter um mesmo valor de marca, embora, idealmente, a probabilidade de ocorrência disto deve ser muito baixa.
 
@@ -85,7 +85,7 @@ Do ponto de vista do atacante, a falsificação existencial é mais "fácil", da
 
 Assim como no caso dos esquemas de cifra simétrica, esquemas MAC devem suportar mensagens de tamanho arbitrário. Entretanto, **não é desejável** que a marca tenha tamanho variável. Considere, por exemplo, a última proposta de um esquema MAC hipotético apresentado na seção anterior: naquele caso, a marca $t$ era simplesmente uma versão cifrada da mensagem original. Isso significa que $t$ teria comprimento similar (possivelmente maior) que o comprimento de $m$. Para mensagens pequenas, isso não é um problema, mas se a mensagem é, por exemplo, um ficheiro com vários gigabytes, a transmissão ou armazenamento de uma marca de tamanho similar necessitaria de recursos muito significativos.
 
-Ao contrário, o ideal é que a marca tivesse tamanho fixo e (relativamente) pequeno. Na prática, isso é obtido com o uso de mecanismos de **resumo criptográfico** (também chamados de ***hashes* criptográficos**). Similarmente a mecanismos utilizados para a verificação de integridade de dados em outros domínios (e.g., *checksum*, CRC), estes resumos ou *hashes* são funções que processam uma mensagem e geram como saída um valor numérico de comprimento fixo, sendo que alterações na mensagem *normalmente* alteram o valor de saída da função. No âmbito dos esquemas MAC, estes *hashes* são aplicados sobre alguma combinação da chave partilhada com o a mensagem, gerando uma representação de comprimento fixo que pode ser usada como uma marca. 
+Ao contrário, o ideal é que a marca tivesse tamanho fixo e (relativamente) pequeno. Na prática, isso é obtido com o uso de mecanismos de **resumo criptográfico** (também chamados de ***hashes* criptográficos**). Similarmente a mecanismos utilizados para a verificação de integridade de dados em outros domínios (e.g., *checksum*, CRC), estes resumos ou *hashes* são funções que processam uma mensagem e geram como saída um valor numérico de comprimento fixo, sendo que alterações na mensagem *normalmente* alteram o valor de saída da função. No âmbito dos esquemas MAC, estes *hashes* são aplicados sobre alguma combinação da chave partilhada com a mensagem, gerando uma representação de comprimento fixo que pode ser usada como uma marca. 
 
 Mesmo que o formato da saída de métodos como o *checksum* e o CRC sejam similares ao que se obtém com os *hashes* criptográficos, estes métodos não foram criados com segurança em mente, e podem ser facilmente manipulados para obter-se uma falsificação existencial. Assim, é fundamental que estes resumos sejam gerados por métodos de *hash* criptográfico para manter as propriedades de segurança do esquema. Estudaremos mais sobre *hashes* criptográficos em aulas futuras.
 
@@ -181,7 +181,7 @@ Além das abordagens *encrypt-then-MAC* e *MAC-then-encrypt* que combinam esquem
 
 Em termos de funcionamento, o GCM combina o modo CTR com o cálculo de uma função *hash* chamada GHASH em um único fluxo de operação. Assim como no CTR, gera-se um fluxo de chave utilizando um contador cujo valor inicial é derivado a partir do IV e a chave $k$. Este fluxo de chave é combinado com o texto plano através da operação XOR bit-a-bit, resultando no texto cifrado. 
 
-No entanto, ao invés de limitar-se a geração deste texto cifrado, o modo GCM o utiliza como entrada da função GHASH - portanto, uma abordagem do tipo *encrypt-then-MAC*. Além do texto cifrado, também passa-se pela GHASH um AAD (*Additional Authentication Data*), que é qualquer dado adicional que não deva ser cifrado, mas que necessite autenticação. De forma simplificada, a GHASH corresponde ao cálculo do valor de um polinômio em um ponto específico $H$. Tanto o AAD quanto os blocos de texto cifrado são tratados como coeficientes no cálculo do polinômio. Esta avaliação do polinômio é realizada com operações em no grupo finito GF(128) - de onde vem a referência ao matemático Évariste Galois no nome do modo. O resultado final do GHASH é, então, combinado com o primeiro bloco do fluxo de chave através de um XOR. 
+No entanto, ao invés de limitar-se a geração deste texto cifrado, o modo GCM o utiliza como entrada da função GHASH - portanto, uma abordagem do tipo *encrypt-then-MAC*. Além do texto cifrado, também passa-se pela GHASH um AAD (*Additional Authentication Data*), que é qualquer dado adicional que não deva ser cifrado, mas que necessite autenticação. De forma simplificada, a GHASH corresponde ao cálculo do valor de um polinômio em um ponto específico $H$. Tanto o AAD quanto os blocos de texto cifrado são tratados como coeficientes no cálculo do polinômio. Esta avaliação do polinômio é realizada com operações no grupo finito GF(128) - de onde vem a referência ao matemático Évariste Galois no nome do modo. O resultado final do GHASH é, então, combinado com o primeiro bloco do fluxo de chave através de um XOR. 
 
 Note, no entanto, que este nível de detalhe sobre a matemática que embasa o método não é relevante para esta UC. Para os nossos propósitos, basta sabermos que o GCM combina cifra e MAC em um único modo, permitindo, adicionalmente, a autenticação de dados não cifrados (o AAD).
 
