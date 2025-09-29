@@ -12,15 +12,15 @@ Além disto, na segunda metade da aula, daremos início ao estudo do JCA (*Java 
 
 ## Assinatura Digital: Introdução
 
-Se analisarmos de maneira abstrata o uso das primitivas criptográficas simétricas e assimétricas, podemos notar que há uma diferença importante na relação entre as chaves utilizadas e os participantes na comunicação. Ao utilizarmos uma primitiva simétrica, há uma única chave que é utilizada por todos os participantes legítimos da comunicação. Desta forma, uma dada chave simétrica esta associada a uma comunicação, e não aos seus participantes individualmente. 
+Se analisarmos de maneira abstrata o uso das primitivas criptográficas simétricas e assimétricas, podemos notar que há uma diferença importante na relação entre as chaves utilizadas e os participantes na comunicação. Ao utilizarmos uma primitiva simétrica, há uma única chave que é utilizada por todos os participantes legítimos da comunicação. Desta forma, uma dada chave simétrica está associada a uma comunicação, e não aos seus participantes individualmente. 
 
-Por outro lado, nas primitivas assimétricas utiliza-se um par de chaves, mas este par está associado especificamente a uma das entidades da comunicação. Por exemplo, no cenário didático de comunicação entre Alice e Bob, Bob cifra a mensagem que deseja enviar à Alice com a **chave pública da Alice**. Ao receber a mensagem, Alice a decifra com a **sua própria chave privada**. Analogamente, se agora Alice deseja enviar uma resposta cifrada a Bob, ela o faz cifrando sua resposta com a **chave pública de Bob**. Por sua vez, Bob decifra a resposta utilizando **sua própria chave privada**.
+Por outro lado, nas primitivas assimétricas utiliza-se um par de chaves, mas este par está associado especificamente a uma das entidades da comunicação. Por exemplo, no cenário didático de comunicação entre Alice e Bob, Bob cifra a mensagem que deseja enviar à Alice utilizando a **chave pública da Alice**. Ao receber a mensagem, Alice a decifra com a **sua própria chave privada**. Analogamente, se agora Alice deseja enviar uma resposta cifrada a Bob, ela o faz cifrando sua resposta com a **chave pública de Bob**. Por sua vez, Bob decifra a resposta utilizando **sua própria chave privada**.
 
 Podemos, portanto, pensar no par de chaves pública e privada de uma determinada entidade como uma **identidade digital**. Ou seja, algo que identifica unicamente aquela entidade. 
 
 Esta ideia fundamental pode ser explorada para o propósito de verificação de integridade / autenticidade de mensagens. Isto dá origem ao esquema criptográfico de **assinatura digital**.
 
-A ideia básica da assinatura digital é similar a dos esquemas MAC: gerar algum tipo de marca a partir de uma mensagem que permita sua posterior verificação por um receptor. Entretanto, enquanto a marca gerada por um esquema MAC está intrinsecamente associada à chave simétrica partilhada entre as partes, a marca da assinatura digital está associada ao par de chaves pública e privada da entidade assinante.
+A ideia básica da assinatura digital é similar à dos esquemas MAC: gerar algum tipo de marca a partir de uma mensagem que permita sua posterior verificação por um receptor. Entretanto, enquanto a marca gerada por um esquema MAC está intrinsecamente associada à chave simétrica partilhada entre as partes, a marca da assinatura digital está associada ao par de chaves pública e privada da entidade assinante.
 
 Note que, num processo de assinatura digital, há duas fases: a geração da assinatura (ou seja, a marca) e a posterior verificação. Como expectável, a geração da assinatura deve ser realizada pela entidade que originou a mensagem. Por outro lado, gostaríamos que qualquer outra entidade fosse capaz de realizar a verificação da autenticidade da assinatura. Desta forma, **a verificação (feita por qualquer entidade) só pode se dar através da chave pública**. Ao mesmo tempo, se queremos que apenas a entidade legítima seja capaz de assinar determinada mensagem, a **assinatura deve ser feita com a chave privada**. Repare que isto é exatamente o **inverso do que ocorre nas cifras assimétricas**.
 
@@ -44,7 +44,7 @@ De maneira mais formal, um esquema de assinatura digital é composto por três f
 
 A função $G(.)$ de um esquema de assinatura digital é equivalente à função homônima que definimos na última aula para as cifras assimétricas. Trata-se, portanto, de uma função probabilística - dado que a chave gerada deve ser imprevisível para um atacante - mas que necessita gerar um par de chaves (pública e privada) que "façam sentido" em conjunto. Dito de outra forma: embora seja necessário haver componentes aleatórios na escolha da chave, as chaves pública e privada devem ser relacionadas de acordo com as propriedades necessárias ao funcionamento da primitiva assimétrica utilizada. No caso do RSA, em particular, isto significa obedecerem às relações adequadas dos valores $N$, $E$ e $D$, conforme estudamos na aula anterior.
 
-A função $S(.)$ recebe como entradas a chave privada e a mensagem $m$ a ser assinada, e tem como saída uma assinatura $s$. Assim como ocorria nos esquemas MAC, é importante que a função $S(.)$ seja capaz de processar mensagens de tamanho arbitrário ($m \in \{0,1\}^*$). Por outro lado, é desejável que as assinaturas retornadas pela função tenham comprimento fixo e, idealmente, relativamente pequeno (ao menos, em comparação com as mensagens potencialmente grandes que se pode desejar assinar).
+A função $S(.)$ recebe como entradas a chave privada e a mensagem $m$ a ser assinada, e tem como saída uma assinatura $s$. Assim como ocorria nos esquemas MAC, é importante que a função $S(.)$ seja capaz de processar mensagens de tamanho arbitrário ($`m \in \{0,1\}^*`$). Por outro lado, é desejável que as assinaturas retornadas pela função tenham comprimento fixo e, idealmente, relativamente pequeno (ao menos, em comparação com as mensagens potencialmente grandes que se pode desejar assinar).
 
 Já a função $V(.)$ recebe como entradas a assinatura $s$, a mensagem $m$ e a chave pública da entidade que supostamente a originou. Como saída, tem-se um valor booleano que indica se a assinatura corresponde ou não à mensagem e a origem.
 
@@ -73,7 +73,7 @@ Em particular, a propriedade de correção de uma assinatura digital é análoga
 
 
 $$
-\forall m \in \{0,1\}^*, \forall (k_{priv}, k_{pub}) \in KeyPairs: V(k_{pub})(S(k_{priv})(m), m) = true
+\forall m \in \lbrace 0,1\rbrace^*, \forall (k_{priv}, k_{pub}) \in KeyPairs: V(k_{pub})(S(k_{priv})(m), m) = true
 $$
 
 Em termos mais simples, isto significa que a verificação de uma assinatura digital correta para uma mensagem legítima deve sempre ser positiva. Dito de outra forma, não queremos que a função de validação erroneamente classifique uma mensagem íntegra e autentica como ilegítima. 
