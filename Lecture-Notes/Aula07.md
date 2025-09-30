@@ -159,7 +159,7 @@ Como uma última observação, repare que, ao contrário dos esquemas MAC, embor
 
 ## JCA: Introdução
 
-A JCA (*Java cryptography Architecture*) é uma API criptográfica padronizada para a linguagem Java. Ela fornece acesso à esquemas criptográficos e funções auxiliares para a execução de tarefas criptográficas básicas, como cifras, MACs, *hashes*, assinaturas, geração de chaves e geração de números pseudo-aleatórios. Com base na JCA, pode-se construir protocolos criptográficos completos para aplicações / sistemas informáticos.
+A JCA (*Java cryptography Architecture*) é uma API criptográfica padronizada para a linguagem Java. Ela fornece acesso a esquemas criptográficos e funções auxiliares para a execução de tarefas criptográficas básicas, como cifras, MACs, *hashes*, assinaturas, geração de chaves e geração de números pseudo-aleatórios. Com base na JCA, pode-se construir protocolos criptográficos completos para aplicações / sistemas informáticos.
 
 Dois pontos-chave do desenho da JCA são sua independência de implementação e de algoritmos. **Independência de algoritmos** significa que a JCA fornece uma API genérica para o acesso aos principais tipos de esquemas e tarefas criptográficas, de forma que a **estrutura do código** que utiliza a JCA permanece muito similar - quase idêntica - mesmo se utilizarmos algoritmos diferentes. Por exemplo, suponha um programa em JCA que realize a cifra de ficheiros especificados pelo utilizador, gerando o texto cifrado como sua saída. Versões deste programa utilizando a cifra DES-EBC ou AES-CBC podem ser praticamente idênticas, diferindo, possivelmente, em uma única linha (ou mesmo, em uma única *string*). 
 
@@ -167,17 +167,17 @@ A independência de algoritmo é uma característica muito positiva da JCA, tend
 
 Por outro lado, a **independência de implementação** significa que a JCA também é genérica em termos de qual implementação de um dado algoritmo é utilizada. Mais concretamente, a JCA permite a escolha entre várias implementações alternativas de um mesmo algoritmo (digamos, uma cifra AES-GCM) através de alterações pontuais no código da aplicação. Mais especificamente, a implementação particular de um esquema pode ser escolhida manipulando-se um único parâmetro de um método, sem que isto afete de qualquer forma o restante do código. Aliás, em certas situações, é possível alterar a implementação utilizada apenas através de ficheiros de configuração.
 
-Como no caso da independência de algoritmo, a independência de implementação é um recurso extremamente útil dado que implementações outrora consideradas seguras podem vir a tornar-se inseguras (*e.g.*, uma vez que um *bug* ou vulnerabilidade seja descoberta). Assim, a habilidade de facilmente chavearmos entre implementações diferentes de um mesmo algoritmo é valiosa.
+Como no caso da independência de algoritmo, a independência de implementação é um recurso extremamente útil dado que implementações outrora consideradas seguras podem vir a tornar-se inseguras (*e.g.*, uma vez que um *bug* ou vulnerabilidade seja descoberto). Assim, a habilidade de facilmente chavearmos entre implementações diferentes de um mesmo algoritmo é valiosa.
 
 Além disto, a JCA também garante a interoperabilidade entre estas implementações. Isto significa, por exemplo, que é possível gerar a assinatura digital de um documento com uma implementação de determinado esquema e depois fazer a verificação da mesma com outra implementação diferente. Isto é essencial ao passo que garante a interoperabilidade entre aplicações que correm em sistemas ou plataformas diferentes.
 
-Estas características de independência de algoritmos e implementação significam que podemos entender a JCA como uma estrutura hierárquica. Do ponto de vista das classes manipuladas pela aplicação, são utilizadas interfaces genéricas para esquemas criptográficos (*e.g.*, cifra), independentemente do algoritmo particular escolhido. Abaixo destas interfaces genéticas encontram-se classes particulares que definem cada algoritmo (*e.g.*, DES-CBC com *padding* PKCS#5). Finalmente, no último nível, temos as implementações concretas, que podem ser múltiplas para cada algoritmo.
+Estas características de independência de algoritmos e implementação significam que podemos entender a JCA como uma estrutura hierárquica. Do ponto de vista das classes manipuladas pela aplicação, são utilizadas interfaces genéricas para esquemas criptográficos (*e.g.*, cifra), independentemente do algoritmo particular escolhido. Abaixo destas interfaces genéricas encontram-se classes particulares que definem cada algoritmo (*e.g.*, DES-CBC com *padding* PKCS#5). Finalmente, no último nível, temos as implementações concretas, que podem ser múltiplas para cada algoritmo.
 
 ## JCA: Arquitetura
 
-Há três componentes fundamentais da arquitetura da JCA: os Cryptographic Service Providers (ou CSPs), as *Engine Classes* e as *Specification Classes*.
+Há três componentes fundamentais da arquitetura da JCA: os _Cryptographic Service Providers_ (ou CSPs), as *Engine Classes* e as *Specification Classes*.
 
-Os ***Cryptographic Service Provider*** são *packages* ou classes que provêm implementações concretas de um ou mais serviços criptográficos. Nas versões do JDK (*Java Development Kit*) distribuídas pela Oracle, são fornecidos *providers* como o `Sun`, o `SunRsaSign`, e o `SunJCE`. No entanto, a JCA é flexível e permite a implementação de outros *providers*. Mesmo que não queiramos nós próprios implementar um *provider*, é possível instalar *providers* de terceiros no ambiente de execução da aplicação para utilização com nossas aplicações.
+Os ***Cryptographic Service Providers*** são *packages* ou classes que provêm implementações concretas de um ou mais serviços criptográficos. Nas versões do JDK (*Java Development Kit*) distribuídas pela Oracle, são fornecidos *providers* como o `Sun`, o `SunRsaSign`, e o `SunJCE`. No entanto, a JCA é flexível e permite a implementação de outros *providers*. Mesmo que não queiramos nós próprios implementar um *provider*, é possível instalar *providers* de terceiros no ambiente de execução da aplicação para utilização com nossas aplicações.
 
 As ***Engine Classes*** são o cerne da API JCA da perspectiva da aplicação. Trata-se de um conjunto de classes que representam de maneira abstrata esquemas criptográficos e outras funcionalidades acessórias. Estas classes não implementam de facto os esquemas criptográficos - isto é feito pelos *providers*. No entanto, elas provêm uma interface padronizada para a seleção e manipulação de tais esquemas, independente dos algoritmos particulares desejados. 
 
@@ -208,7 +208,7 @@ No entanto, em certas situações específicas, podemos necessitar utilizar *pro
 
 Seja qual for a motivação, *providers* podem ser facilmente instalados no ambiente de execução de uma aplicação Java. A instalação passa pela colocação do *package* do *provider* na *classpath* da JVM (*Java Virtual Machine*) no ambiente de execução ou, alternativamente, na diretoria de extensões. 
 
-Feito isto, é necessário também **registar** o *provider* junto ao JCA. Este registo pode ser feito de duas maneiras. A primeira é através do ficheiro `java.security`, que encontra-se em um caminho específico dentro da diretoria de instalação do Java no sistema. Trata-se de um ficheiro texto de configuração que define uma série de parâmetros de comportamento relativos à segurança. Entre outras coisas, este ficheiro regista uma lista de *providers* associadas de respetivas prioridades. Um trecho de um ficheiro `java.security` pode ser visto a seguir:
+Feito isto, é necessário também **registar** o *provider* junto ao JCA. Este registo pode ser feito de duas maneiras. A primeira é através do ficheiro `java.security`, que se encontra em um caminho específico dentro da diretoria de instalação do Java no sistema. Trata-se de um ficheiro texto de configuração que define uma série de parâmetros de comportamento relativos à segurança. Entre outras coisas, este ficheiro regista uma lista de *providers* associadas de respetivas prioridades. Um trecho de um ficheiro `java.security` pode ser visto a seguir:
 
 ```
 ...
@@ -232,7 +232,7 @@ security.provider.12=SunPKCS11
 
 Se quiséssemos registar um novo *provider* neste ambiente, bastaria adicionarmos uma nova linha ao final deste trecho com o conteúdo `security.provider.13=<nome provider>`.
 
-Alternativamente, podemos fazer o registo dinâmico de um *provider*. Ou seja, independentemente do conteúdo fo ficheiro `java.security` podemos, programaticamente, solicitar o registo de um *provider*. Isto é feito através de uma classe especial da JCA chamada `Security`. Esta classe fornece métodos tanto para o registo de *providers* quanto para obtermos uma lista dos *providers* atualmente registados e dos algoritmos por eles disponibilizados.
+Alternativamente, podemos fazer o registo dinâmico de um *provider*. Ou seja, independentemente do conteúdo do ficheiro `java.security` podemos, programaticamente, solicitar o registo de um *provider*. Isto é feito através de uma classe especial da JCA chamada `Security`. Esta classe fornece métodos tanto para o registo de *providers* quanto para obtermos uma lista dos *providers* atualmente registados e dos algoritmos por eles disponibilizados.
 
 Note no exemplo anterior do ficheiro `java.security` que há números associados a cada entrada da lista de *providers*. Por exemplo, o *provider* `SUN` é listado como número 1, enquanto o *provider* `XMLDSig` é o de número 8. Estes números denotam uma **ordem de prioridade** ou de preferência dos *providers*, o que é utilizado pelo JCA quando solicitamos a instanciação de um objeto de uma das *Engine Classes*.
 
@@ -295,7 +295,7 @@ Deve-se destacar também que as operações da JCA em geral são realizadas no d
 
 Vimos na seção anterior o uso de uma *Engine Class* particular do JCA: a `MessageDigest`. Entretanto, há várias outras *Engine Classes* que são utilizadas a depender do esquema criptográfico escolhido. Entre elas, podemos destacar:
 
-- `Cipher`: utilizada em esquemas de cifra. É importante notar que trata-se de uma única classe utilizada tanto para esquemas simétricos quanto para os assimétricos.
+- `Cipher`: utilizada em esquemas de cifra. É importante notar que se trata de uma única classe utilizada tanto para esquemas simétricos quanto para os assimétricos.
 - `Mac`: utilizada para esquemas MAC.
 - `Signature`: utilizada para esquemas de assinatura digital.
 - `MessageDigest`: utilizada para acesso a funções de *hash* criptográficas.
@@ -305,9 +305,9 @@ Vimos na seção anterior o uso de uma *Engine Class* particular do JCA: a `Mess
 
 Veremos várias destas classes em mais detalhes nesta e em próximas aulas, mas as últimas três desta lista merecem um breve comentário neste ponto. 
 
-Tanto a `KeyGenerator` quanto a `KeyPairGenerator` fornecem acesso a funcionalidades de geração de chaves. Logo, estas classes são comumente utilizadas em conjunto com as classes `Cipher`, `Mac` e `Signature`, dados que os esquemas criptográficos associados utilizam alguma forma de chave. No exemplo, de código da seção anterior, em que utilizamos a classe `MessageDigest`, não necessitamos das classes `KeyGenerator` e `KeyPairGenerator` simplesmente porque funções de *hash*, por si só, não utilizam chaves. 
+Tanto a `KeyGenerator` quanto a `KeyPairGenerator` fornecem acesso a funcionalidades de geração de chaves. Logo, estas classes são comumente utilizadas em conjunto com as classes `Cipher`, `Mac` e `Signature`, dados que os esquemas criptográficos associados utilizam alguma forma de chave. No exemplo de código da seção anterior, em que utilizamos a classe `MessageDigest`, não necessitamos das classes `KeyGenerator` e `KeyPairGenerator` simplesmente porque funções de *hash*, por si só, não utilizam chaves. 
 
-Já a classe `SecureRandom` tem papel fundamental na maioria dos esquemas criptográficos. Isto porque frequentemente necessitamos criar números ou sequências de números que **pareçam aleatórios**. Na prática, computadores por si só tem dificuldade em gerar números realmente aleatórios, dada a natureza determinística das suas instruções. No entanto, existem os chamados **algoritmos de geração de números pseudo-aleatórios**, *i.e.*, algoritmos que geram uma sequência de números que parecem aleatórios, embora sejam gerados através de algoritmos determinísticos. Além disto, muitas vezes são utilizadas **fontes de entropia** baseadas em grandezas aleatórias mensuráveis pelo computador (*e.g.*, o intervalo entre duas pressões consecutivas de teclas do teclado, flutuações na tensão de alimentação da fonte do computador). Em resumo, cabe aos *providers* da *Engine Class* `SecureRandom` implementar algoritmos e métodos que gerem sequências adequadas de valores pseudo-aleatórios. Estes valores são, depois, consumidos por outras *Engine Classes*, como as responsáveis pela geração de chaves.
+Já a classe `SecureRandom` tem papel fundamental na maioria dos esquemas criptográficos. Isto porque frequentemente necessitamos criar números ou sequências de números que **pareçam aleatórios**. Na prática, computadores por si só têm dificuldade em gerar números realmente aleatórios, dada a natureza determinística das suas instruções. No entanto, existem os chamados **algoritmos de geração de números pseudo-aleatórios**, *i.e.*, algoritmos que geram uma sequência de números que parecem aleatórios, embora sejam gerados através de algoritmos determinísticos. Além disto, muitas vezes são utilizadas **fontes de entropia** baseadas em grandezas aleatórias mensuráveis pelo computador (*e.g.*, o intervalo entre duas pressões consecutivas de teclas do teclado, flutuações na tensão de alimentação da fonte do computador). Em resumo, cabe aos *providers* da *Engine Class* `SecureRandom` implementar algoritmos e métodos que gerem sequências adequadas de valores pseudo-aleatórios. Estes valores são, depois, consumidos por outras *Engine Classes*, como as responsáveis pela geração de chaves.
 
 Todas as *Engine Classes* disponibilizam várias sobrecargas de um método estático chamado `getInstance()`. Como já vimos anteriormente, este método tem por objetivo criar instâncias particulares da *Engine Class* com configurações específicas. A ideia, portanto, é utilizar um padrão de projeto *Factory* ao invés de permitir a instanciação direta da classe através do comando `new`. Esta arquitetura permite instanciar classes específicas (*i.e.*, para um algoritmo específico e de um *provider* específico) de maneira transparente ao utilizador, dado que o objeto retornado é sempre visto como sendo da classe genérica da *Engine Class*.
 
@@ -347,7 +347,7 @@ Uma vez iniciado o objeto da classe `KeyGenerator`, podemos solicitar a geraçã
 
 O próximo passo é a instanciação da cifra em si. Novamente, utilizamos o método `getInstance()` - desta vez da *Engine Class* `Cipher`. Repare na *string* de transformação: `"AES/ECB/PKCS5Padding"`. Ela denota que solicitamos uma cifra baseada na primitiva AES utilizando o modo ECB e, como método de *padding*, o PKCS#5.
 
-Antes de podermos realizar cifras ou decifras com o objeto recém-instanciado, devemos proceder à sua inicialização. Isto é feito através do método `init()`. Para um objeto do tipo `Cipher`, a inicialização permite a especificação do **modo de uso** e da chave - opcionalmente, podemos definir outros parâmetros, como o IV. O modo de operação diz basicamente qual operação desejamos daquele objeto (*e.g.*, cifra ou decifra) e é informado através de constantes definidas na *Engine Class* `Cipher` (aqui, por exemplo solicitamos o modo de cifra). Como chave, passamos o objeto `key` gerado nos passos anteriores.
+Antes de podermos realizar cifras ou decifras com o objeto recém-instanciado, devemos proceder à sua inicialização. Isto é feito através do método `init()`. Para um objeto do tipo `Cipher`, a inicialização permite a especificação do **modo operacional** e da chave - opcionalmente, podemos definir outros parâmetros, como o IV. O modo operacional diz basicamente qual operação desejamos daquele objeto (*e.g.*, cifra ou decifra) e é informado através de constantes definidas na *Engine Class* `Cipher` (aqui, por exemplo solicitamos o modo de cifra). Como chave, passamos o objeto `key` gerado nos passos anteriores.
 
 A partir deste ponto, o objeto `Cipher` está pronto para uso.
 
@@ -370,11 +370,11 @@ Devido às muitas possíveis combinações, a documentação da JCA provê uma l
 
 ## A Classe *Cipher*
 
-Como um primeiro exemplo de *Engine Class*, vamos considerar a classe `Cipher`. Como o nome sugere, esta é a classe utilizada quando deseja-se realizar a cifra ou decifra de determinada informação. Note que tanto cifras simétricas quanto assimétricas utilizam esta mesma classe.
+Como um primeiro exemplo de *Engine Class*, vamos considerar a classe `Cipher`. Como o nome sugere, esta é a classe utilizada quando se deseja realizar a cifra ou decifra de determinada informação. Note que tanto cifras simétricas quanto assimétricas utilizam esta mesma classe.
 
 Antes de se realizar cifras ou decifras com um objeto da classe `Cipher`, é necessário fazer uma inicialização do mesmo. Isto é realizado através de alguma versão do método `init()`. Embora existam várias sobrecargas do mesmo, em geral este método deve ser chamado com ao menos dois parâmetros: um modo operacional e uma chave. 
 
-É importante não confundir o modo operacional, no contexto da inicialização de um objeto da classe `Cipher`, com o modo de operação de uma cifra (*e.g.*, ECB, CBC). Aqui, o modo operacional denota simplesmente que tipo de operação desejamos realizar com o objeto `Cipher`: cifra ou decifra. Este modo de operação é passado para o método `init()` por meio de constantes definidas na classe `Cipher`. Por exemplo, a constante `Cipher.ENCRYPT_MODE` denota a operação de cifra, enquanto a `Cipher.DECRYPT_MODE` denota a decifra.
+É importante não confundir o modo operacional, no contexto da inicialização de um objeto da classe `Cipher`, com o modo de operação de uma cifra (*e.g.*, ECB, CBC). Aqui, o modo operacional denota simplesmente que tipo de operação desejamos realizar com o objeto `Cipher`: cifra ou decifra. Este modo operacional é passado para o método `init()` por meio de constantes definidas na classe `Cipher`. Por exemplo, a constante `Cipher.ENCRYPT_MODE` denota a operação de cifra, enquanto a `Cipher.DECRYPT_MODE` denota a decifra.
 
 Além dos modos de cifra e decifra, há ainda dois outros modos adicionais chamados *wrap* e *unwrap*. A rigor, estes métodos também realizam, respetivamente, cifra e decifra. Entretanto, eles são disponibilizados especificamente para a cifra / decifra de chaves representadas como objetos da classe `Key`. Embora seja possível cifrar / decifrar chaves utilizando os modos de cifra e decifra, seria necessário fazer algumas manipulações prévias com o objeto `Key` de forma a obter o conteúdo da chave em alguma codificação. Ao contrário, nos modos *wrap* e *unwrap* há métodos que recebem ou retornam diretamente objetos `Key`, o que facilita a programação.
 
@@ -389,7 +389,7 @@ Ambos os métodos `update()` e `doFinal()` são utilizados para cifrar ou decifr
 
 Mas por que, então, há dois métodos para cifra ou decifra? E quando se deve utilizar cada um deles?
 
-O método `doFinal()` **sempre deve ser chamado para concluir o processo de cifra / decifra**. Se a mensagem inteira a ser cifrada ou decifrada já está disponível, então podemos simplesmente chamar o `doFinal()` uma única passando toda a mensagem como argumento, sem a necessidade de realizar chamadas ao `update()`. 
+O método `doFinal()` **sempre deve ser chamado para concluir o processo de cifra / decifra**. Se a mensagem inteira a ser cifrada ou decifrada já está disponível, então podemos simplesmente chamar o `doFinal()` uma única vez passando toda a mensagem como argumento, sem a necessidade de realizar chamadas ao `update()`. 
 
 Um exemplo disto pode ser visto no trecho de código a seguir:
 
