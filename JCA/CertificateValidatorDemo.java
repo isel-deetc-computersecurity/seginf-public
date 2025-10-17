@@ -24,6 +24,10 @@ class CertificateValidatorDemo {
         "certificates-keys/trust-anchors/CA1.cer"
     };
 
+    private static final String[] TRUST_ANCHORS = {
+        "certificates-keys/trust-anchors/CA1.cer"
+    };
+
     static private X509Certificate getCertificateFromFile(String fileName) throws IOException, CertificateException {
 
         // Instancia uma factory de certificados X.509
@@ -55,8 +59,9 @@ class CertificateValidatorDemo {
         // Também é necessário um conjunto de trust anchors
         Set<TrustAnchor> trustAnchorSet = new HashSet<>();
 
-        // Adiciona apenas o certificado raiz (trust anchor)
-        trustAnchorSet.add(new TrustAnchor(certList.get(2), null));
+        // Obtém os certificados de confiança (no caso, apenas CA1.cer) e adiciona-os ao trust anchor
+        X509Certificate certTrust = getCertificateFromFile(TRUST_ANCHORS[0]);
+        trustAnchorSet.add(new TrustAnchor(certTrust, null));
 
         // Cria os parâmetros do PKIX a partir dos trust anchors
         CertPathParameters params = (CertPathParameters) new PKIXParameters(trustAnchorSet);
