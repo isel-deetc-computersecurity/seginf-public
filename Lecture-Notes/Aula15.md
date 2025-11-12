@@ -470,7 +470,7 @@ eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4
 
 #### Exemplo com JWT
 
-Vejamos agora ver um exemplo simplificado de como uma aplicação *web* pode funcionar em conjunto com um sistema de autenticação através de *tokens* JWT. Aqui, assumimos que a aplicação web e o sistema de autenticação correspondem a servidores distintos e não relacionados. Particularmente, assumimos que a aplicação *web* tem endereço `https://www.secure-server.edu:4433`, enquanto o sistema de autenticação corre em `https://www.auth-server.edu:8433/`. 
+Vejamos agora um exemplo simplificado de como uma aplicação *web* pode funcionar em conjunto com um sistema de autenticação através de *tokens* JWT. Aqui, assumimos que a aplicação web e o sistema de autenticação correspondem a servidores distintos e não relacionados. Particularmente, assumimos que a aplicação *web* tem endereço `https://www.secure-server.edu:4433`, enquanto o sistema de autenticação corre em `https://www.auth-server.edu:8433/`. 
 
 Para este exemplo, vamos considerar uma hipotética aplicação bancária e, em específico, nos focaremos em um único recurso protegido chamado `/balance` (*i.e.*, permite consultar o saldo da conta do utilizador).
 
