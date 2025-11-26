@@ -288,7 +288,7 @@ Existe também uma segunda relação que denominaremos $UA$ -- do Inglês *User 
 
 Similarmente, a relação $PA$ -- do Inglês *Permission Assignment* -- associa permissões e papéis. Assim como a $UA$, trata-se de uma relação *muitos para muitos*, já que um papel pode possuir múltiplas permissões e uma permissão pode ser atribuída a múltiplos papéis.
 
-A quarta e última relação utilizada pelo RBAC é denominada $roles(s_i)$. Trata-se de uma função que associa cada sessão $s_i$ a um conjunto de papéis. Lembre-se que cada sessão corresponde a exatamente um utilizador e que cada utilizador tem (potencialmente vários) papéis. No entanto, o RBAC assume que, dentro de uma determinada sessão, um utilizador pode optar por assumir apenas um subconjunto dos seus papéis que sejam suficientes para concluir as tarefas que deseja realizar naquela sessão. É justamente este subconjunto que a função $roles(s_i)$ representa. Matematicamente, $roles(s_i) \subseteq \{r | (users(s_i), r) \in UA\}$.
+A quarta e última relação utilizada pelo RBAC é denominada $roles(s_i)$. Trata-se de uma função que associa cada sessão $s_i$ a um conjunto de papéis. Lembre-se que cada sessão corresponde a exatamente um utilizador e que cada utilizador tem (potencialmente vários) papéis. No entanto, o RBAC assume que, dentro de uma determinada sessão, um utilizador pode optar por assumir apenas um subconjunto dos seus papéis que sejam suficientes para concluir as tarefas que deseja realizar naquela sessão. É justamente este subconjunto que a função $roles(s_i)$ representa. Matematicamente, $`roles(s_i) \subseteq \{r | (users(s_i), r) \in UA\}`$.
 
 Para que a ideia da função $roles(s_i)$ fique mais clara, considere o exemplo da plataforma *Moodle* do ISEL. A plataforma define diversos papéis que podem ser associados aos seus utilizadores, como *aluno*, *professor*, *criador de disciplina*. Particularmente, embora o professor de uma certa disciplina tenha, tipicamente, o papel *professor*, ele também está associado ao papel *aluno*. Para várias tarefas realizadas pelo professor na plataforma, são necessárias as permissões relacionadas ao papel *professor* (*e.g.*, editar o conteúdo da página da disciplina, criar grupos, visualizar conteúdos ocultos aos alunos). No entanto, em certas situações, pode ser interessante que mesmo um utilizador professor assuma o papel *aluno* (por exemplo, para visualizar o conteúdo da página da disciplina da perspetiva de um aluno). Logo, numa dada sessão, o Moodle permite que o utilizador professor escolha entre o papel *professor* e o papel *aluno*, a depender do que é conveniente naquele momento.
 
@@ -298,11 +298,11 @@ Em resumo, a relação $roles(s_i)$ implica que, no RBAC, o sistema pode permiti
 
 Para exemplificar esta notação matemática, considere a seguinte política de controlo de acessos descrita segundo o modelo RBAC<sub>0</sub>:
 
-- $U = \{u_1, u_2\}$
-- $R = \{r_1, r_2, r_3\}$
-- $P = \{p_a, p_b, p_c, p_d\}$
-- $UA = \{(u_1, r_1), (u_1, r_3), (u_2, r_2)\}$
-- $PA = \{(r_1, p_a), (r_1, p_d), (r_2, p_a), (r_2, p_b), (r_3, p_c)\}$
+- $`U = \{u_1, u_2\}`$
+- $`R = \{r_1, r_2, r_3\}`$
+- $`P = \{p_a, p_b, p_c, p_d\}`$
+- $`UA = \{(u_1, r_1), (u_1, r_3), (u_2, r_2)\}`$
+- $`PA = \{(r_1, p_a), (r_1, p_d), (r_2, p_a), (r_2, p_b), (r_3, p_c)\}`$
 
 Esta política contempla dois utilizadores, denominados $u_1$ e $u_2$, e três papéis ($r_1$, $r_2$ e $r_3$). Além disto, ela define quatro permissões diferentes: $p_a, p_b, p_c$ e $p_d$. A relação $UA$ define que o utilizador $u_1$ tem dois papéis: $r_1$ e $r_3$. Já o utilizador $u_2$ tem apenas o papel $r_2$. Note que isto significa que, numa dada sessão, $u_1$ pode ativar apenas o papel $r_1$, apenas o papel $r_3$ ou ambos os papeis $r_1$ e $r_3$. Se, por exemplo, $u_1$ ativa apenas o papel $r_1$, ele terá as permissões $p_a$ e $p_d$. Por outro lado, se ele ativar ambos os papéis $r_1$ e $r_3$, ele passará a ter as permissões $p_a$, $p_d$ e $p_c$.
 
@@ -338,7 +338,7 @@ Mas o que, exatamente, significa um papel ser sénior relativamente a outro? Par
 
 Matematicamente, esta hierarquia de papéis é representada no RBAC pela adição de mais uma relação denominada $RH$ (do Inglês, *Role Hierarchy*). Esta relação associa pares de papéis, definindo qual é o papel sénior e qual é o papel júnior. No restante desta UC, adotaremos a mesma notação utilizada por Sandhu *et al.* baseada nos operadores $\preccurlyeq$ e $\succcurlyeq$. Mais especificamente, se um papel $R_x$ é sénior relativamente a um papel $R_y$ (ou se são o mesmo papel), escrevemos $R_x \succcurlyeq R_y$. Alternativamente, podemos inverter a direção do operador para denotar que $R_y$ é júnior relativamente a $R_x$ (ou são o mesmo papel): $R_y \preccurlyeq R_x$.
 
-Além da definição da relação $RH$, que não existe no RBAC<sub>0</sub>, outra diferença da modelagem do RBAC<sub>1</sub> é na definição da função $roles(s_i)$. Isto porque é preciso levar em conta as heranças das permissões pelos papéis sénior. Assim, para o RBAC<sub>1</sub>, $roles(s_i) \subseteq \{r | (\exists r^\prime \succcurlyeq r, (users(s_i), r^\prime) \in UA\}$. Em termos simplificados, o que esta definição diz é que o utilizador pode ativar numa sessão qualquer conjunto de papéis $r$ tal que o utilizador tenha o papel $r$ ou um papel $r^\prime$ sénior de $r$.
+Além da definição da relação $RH$, que não existe no RBAC<sub>0</sub>, outra diferença da modelagem do RBAC<sub>1</sub> é na definição da função $roles(s_i)$. Isto porque é preciso levar em conta as heranças das permissões pelos papéis sénior. Assim, para o RBAC<sub>1</sub>, $`roles(s_i) \subseteq \{r | (\exists r^\prime \succcurlyeq r, (users(s_i), r^\prime) \in UA\}`$. Em termos simplificados, o que esta definição diz é que o utilizador pode ativar numa sessão qualquer conjunto de papéis $r$ tal que o utilizador tenha o papel $r$ ou um papel $r^\prime$ sénior de $r$.
 
 Vamos agora tentar ilustrar o uso do RBAC<sub>1</sub> com um exemplo mais concreto. Suponha uma empresa de desenvolvimento de *software* em que haja algum sistema para a gestão das atividades / tarefas realizadas pelos funcionários alocados aos projetos em andamento. Digamos que tais projetos tenham os seguintes papeis:
 
@@ -448,7 +448,7 @@ Esta adaptabilidade e flexibilidade do RBAC permite, inclusive, que seus modelos
 
 A inclusão de mecanismos apropriados de controlo de acesso em sistemas informáticos é importante não só pela segurança da própria aplicação, mas também para garantir a conformidade da aplicação com a legislação vigente. 
 
-Na União Europeia, está em vigência, desde 2018, o RGPD (Regulamento Geral sobre a Proteção de Dados), que trata do direito à privacidade e proteção de dados pessoais para todos so indivíduos da UE e do Espaço Económico Europeu. Mais especificamente em Portugal, a resolução do Conselho de Ministros n.º 41/2018 relaciona o RGPD e aspetos tecnológicos obrigatórios ou recomendados para aplicações informáticas. A resolução especifica muitos requisitos que variam desde diretrizes para a criação de *passwords* até aspetos formais de testes aos quais os sistemas devem ser submetidos.
+Na União Europeia, está em vigência, desde 2018, o RGPD (Regulamento Geral sobre a Proteção de Dados), que trata do direito à privacidade e proteção de dados pessoais para todos os indivíduos da UE e do Espaço Económico Europeu. Mais especificamente em Portugal, a resolução do Conselho de Ministros n.º 41/2018 relaciona o RGPD e aspetos tecnológicos obrigatórios ou recomendados para aplicações informáticas. A resolução especifica muitos requisitos que variam desde diretrizes para a criação de *passwords* até aspetos formais de testes aos quais os sistemas devem ser submetidos.
 
 Particularmente, a resolução cita diversos requisitos que dizem respeito ao controlo de acesso. Por exemplo, a resolução estabelece a necessidade de criação de perfis de utilizador com os privilégios mínimos necessários para as tarefas a serem executadas. Estes perfis são criados tomando por base a natureza dos dados pessoais manipulados e a ação a ser realizada.
 
@@ -493,12 +493,12 @@ Embora o ABAC possa ser utilizado como uma alternativa ao RBAC, é possível, ai
 
 Para finalizarmos esta aula, vamos tentar fixar os conceitos do RBAC ao analisarmos uma política RBAC em concreto. Para tanto, considere a política a seguir:
 
-- $U = \{u_0, u_1, u_2, u_4\}$
-- $R = \{r_0, r_1, r_2, r_3, r_4, r_5\}$
-- $P = \{p_a, p_b, p_c, p_d\}$
-- $UA = \{(u_0, r_0), (u_1, r_3), (u_1, r_4), (u_2, r_4), (u_4, r_5)\}$
-- $\{r_0 \preccurlyeq r_1, r_0 \preccurlyeq r_2, r_1 \preccurlyeq r_3, r_2 \preccurlyeq r_4, r_1 \preccurlyeq r_5, r_2 \preccurlyeq r_5\} \subseteq RH$
-- $PA = \{(r_0, p_a), (r_0, p_d), (r_3, p_b), (r_4, p_c)\}$
+- $`U = \{u_0, u_1, u_2, u_4\}`$
+- $`R = \{r_0, r_1, r_2, r_3, r_4, r_5\}`$
+- $`P = \{p_a, p_b, p_c, p_d\}`$
+- $`UA = \{(u_0, r_0), (u_1, r_3), (u_1, r_4), (u_2, r_4), (u_4, r_5)\}`$
+- $`\{r_0 \preccurlyeq r_1, r_0 \preccurlyeq r_2, r_1 \preccurlyeq r_3, r_2 \preccurlyeq r_4, r_1 \preccurlyeq r_5, r_2 \preccurlyeq r_5\} \subseteq RH`$
+- $`PA = \{(r_0, p_a), (r_0, p_d), (r_3, p_b), (r_4, p_c)\}`$
 
 Como vemos, esta política define um conjunto de 4 utilizadores: $u_0, u_1, u_2$ e  $u_4$. São definidos também 6 papéis ($r_0, r_1, r_2, r_3, r_4$ e $r_5$) e 4 permissões ($p_a, p_b, p_c, p_d$). 
 
